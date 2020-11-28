@@ -53,7 +53,7 @@ class _Calci extends State<Calci>{
   bool inv = false;
   var angle = ['rad', 'deg'];
   var _defAngle = 'rad';
-  var a = 'e';
+  var b = '2';
 
   @override
   Widget build(BuildContext context) {
@@ -84,133 +84,96 @@ class _Calci extends State<Calci>{
                   // deg - rad
                   Row(
                     children: [
-                      Expanded(child: Row(
-                        children: [
-                          Expanded(child: Container(
+                      Flexible(
+                          child: Container(
                             height: 35,
                             margin: EdgeInsets.all(2.5),
                             child: Center(child: Text('Inv',
                               style: TextStyle(
-                                color: Colors.black45,),
+                color: Colors.black45,),
                               textScaleFactor: 1.5,
                               textAlign: TextAlign.right,),),
                           )),
 
-                          Expanded(child: Container(
-                              height: 35,
-                              margin: EdgeInsets.only(top: 2.5,
-                                  left: 2.5, bottom: 5.0),
-                              child: Center(child: Switch(
-                                value: inv,
-                                onChanged: (bool v) => setState(() => inv = v),
-                              ),))),
-                        ],
-                      )),
+                      Flexible(
+                          child: Container(
+                          height: 30,
+                          margin: EdgeInsets.only(top: 2.5,
+                              left: 2.5, bottom: 5.0),
+                          child: Center(child: Checkbox(
+                            value: inv,
+                            onChanged: (bool v) => setState(() => inv = v),
+                          ),))),
 
-                      Expanded(child: Row(
-                        children: [
-                          Expanded(child: Text('\u{1d703} =',
+                      Flexible(
+                          child: Text('\u{1d703} =',
                             style: TextStyle(color: Colors.black45),
-                            textAlign: TextAlign.center,)),
+                            textAlign: TextAlign.center,)
+                      ),
 
-                          Expanded(child: Container(
+                      Flexible(
+                          child: Container(
                               height: 35,
                               margin: EdgeInsets.all(2.5),
                               child: DropdownButton(
-                                items: angle.map((String a) => DropdownMenuItem(
-                                  child: Text(a,
-                                    style: TextStyle(color: Colors.black45),),
-                                  value: a,
-                                )).toList(),
+                                items: angle.map((String a) =>
+                                    DropdownMenuItem(
+                                      child: Text(a,
+                                        style: TextStyle(
+                                            color: Colors.black45),
+                                      ),
+                                      value: a,
+                                    )
+                                ).toList(),
                                 onChanged: (String a) => setState((){this._defAngle = a;}),
                                 value: _defAngle,
-                              ))),
-                        ],
-                      )),
-
-                      Expanded(
-                        child: Row(
-                          children: [
-                            Expanded(child: Text('a =',
-                              style: TextStyle(color: Colors.black45, ),
-                              textScaleFactor: 1.5,
-                              textAlign: TextAlign.center,)),
-
-                            Expanded(child: Container(
-                                height: 35,
-                                margin: EdgeInsets.all(2.5),
-                                child: TextField(
-                                  controller: base,
-                                  style: TextStyle(color: Colors.black45, ),
-                                  keyboardType: TextInputType.number,
-                                  onSubmitted: (String base){this.a = base;},
-                                  decoration: InputDecoration(
-                                    // labelText: 'base',
-                                    hintText: 'base',
-                                  ),
-                                )))
-                          ],
-                        ),
+                              ))
                       ),
 
+                      Flexible(child: Text('a =',
+                        style: TextStyle(color: Colors.black45, ),
+                        textScaleFactor: 1.5,
+                        textAlign: TextAlign.center,)),
+
+                      Flexible(child: Container(
+                          height: 35,
+                          margin: EdgeInsets.all(2.5),
+                          child: TextField(
+                            controller: base,
+                            style: TextStyle(color: Colors.black45, ),
+                            keyboardType: TextInputType.number,
+                            onSubmitted: (String base){this.b = base;},
+                            decoration: InputDecoration(
+                              // labelText: 'base',
+
+                              hintText: '2',
+                            ),
+                          ))),
                     ],
                   ),
 
-                  //trig
+                  // trig
                   Row(
                     children: [
+                      // sin
                       Expanded(
-                        child: Container(
-                            height: 35,
-                            margin: EdgeInsets.all(2.5),
-                            child:ElevatedButton(
-                              style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.resolveWith(
-                                          (states) => Colors.white) ),
-                              onPressed: () {},
-                              child: Text('sin',
-                                style: TextStyle(color: Colors.black45),
-                                textScaleFactor: 1.5,
-                              ),
-                            )),
+                        child: trigButton(context, 'sin'),
                       ),
 
+                      // cos
                       Expanded(
-                        child: Container(
-                            height: 35,
-                            margin: EdgeInsets.all(2.5),
-                            child:ElevatedButton(
-                              style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.resolveWith(
-                                          (states) => Colors.white) ),
-                              onPressed: () {},
-                              child: Text('cos',
-                                style: TextStyle(color: Colors.black45),
-                                textScaleFactor: 1.5,
-                              ),
-                            )),
+                        child: trigButton(context, 'cos'),
                       ),
 
+                      // tan
                       Expanded(
-                        child: Container(
-                            height: 35,
-                            margin: EdgeInsets.all(2.5),
-                            child:ElevatedButton(
-                              style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.resolveWith(
-                                          (states) => Colors.white) ),
-                              onPressed: () {},
-                              child: Text('tan',
-                                style: TextStyle(color: Colors.black45),
-                                textScaleFactor: 1.5,
-                              ),
-                            )),
+                        child: trigButton(context, 'tan'),
                       ),
 
                     ],
                   ),
 
-                  //log
+                  // log
                   Row(
                     children: [
                       Expanded(
@@ -527,9 +490,9 @@ class _Calci extends State<Calci>{
       )
     );
   }
-  
+
   Widget numButton(context, String num){
-    return Container(
+    final button =  Container(
         height: 35,
         margin: EdgeInsets.all(2.5),
         child: ElevatedButton(
@@ -551,6 +514,7 @@ class _Calci extends State<Calci>{
           }),
         )
     );
+    return button;
   }
 
   Widget opButton(context, String op){
@@ -574,6 +538,32 @@ class _Calci extends State<Calci>{
           expr.text = eqn.join(' ');
         }),
       ),
+    );
+    return button;
+  }
+
+  Widget trigButton(context, String fn){
+    final button = Container(
+        height: 35,
+        margin: EdgeInsets.all(2.5),
+        child: ElevatedButton(
+          style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.resolveWith(
+                      (states) => Colors.white) ),
+          child: Text(fn,
+            textScaleFactor: 1.5,
+            style: TextStyle(color: Colors.black45),// Theme.of(context).primaryColorDark,),
+          ),
+          onPressed: () => setState((){
+            if (inv == false) {
+              eqn.add(fn);
+            }else{
+              eqn.add('arc'+fn);
+            }
+            eqn.add('(');
+             expr.text = eqn.join(' ');
+          }),
+        )
     );
     return button;
   }
