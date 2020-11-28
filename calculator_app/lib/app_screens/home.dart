@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 // import 'package:string_validator/string_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:calculator_app/back_end/Calculation.dart';
+import 'package:calculator_app/back_ends/Calculation.dart';
 import 'package:flutter/widgets.dart';
 
 List eqn = ['0'];
@@ -102,7 +102,7 @@ class _Calci extends State<Calci>{
                                   left: 2.5, bottom: 5.0),
                               child: Center(child: Switch(
                                 value: inv,
-                                onChanged: () => setState((bool v) => inv = v),
+                                onChanged: (bool v) => setState(() => inv = v),
                               ),))),
                         ],
                       )),
