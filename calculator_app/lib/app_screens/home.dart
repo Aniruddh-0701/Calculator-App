@@ -84,34 +84,35 @@ class _Calci extends State<Calci>{
                   // deg - rad
                   Row(
                     children: [
-                      Flexible(
+                      Expanded(
                           child: Container(
                             height: 35,
-                            margin: EdgeInsets.all(2.5),
-                            child: Center(child: Text('Inv',
+                            margin: EdgeInsets.only(top: 5.0,
+                                right: 2.5),
+                            child: Text('Inv',
                               style: TextStyle(
-                color: Colors.black45,),
+                                color: Colors.black45,),
                               textScaleFactor: 1.5,
-                              textAlign: TextAlign.right,),),
+                              textAlign: TextAlign.right,),
                           )),
 
-                      Flexible(
+                      Expanded(
                           child: Container(
-                          height: 30,
-                          margin: EdgeInsets.only(top: 2.5,
+                            height: 30,
+                            margin: EdgeInsets.only(top: 2.5,
                               left: 2.5, bottom: 5.0),
-                          child: Center(child: Checkbox(
-                            value: inv,
-                            onChanged: (bool v) => setState(() => inv = v),
-                          ),))),
+                            child: Switch(
+                              value: inv,
+                              onChanged: (bool v) => setState(() => inv = v),
+                            ),)),
 
-                      Flexible(
+                      Expanded(
                           child: Text('\u{1d703} =',
                             style: TextStyle(color: Colors.black45),
                             textAlign: TextAlign.center,)
                       ),
 
-                      Flexible(
+                      Expanded(
                           child: Container(
                               height: 35,
                               margin: EdgeInsets.all(2.5),
@@ -130,12 +131,12 @@ class _Calci extends State<Calci>{
                               ))
                       ),
 
-                      Flexible(child: Text('a =',
+                      Expanded(child: Text('a =',
                         style: TextStyle(color: Colors.black45, ),
                         textScaleFactor: 1.5,
                         textAlign: TextAlign.center,)),
 
-                      Flexible(child: Container(
+                      Expanded(child: Container(
                           height: 35,
                           margin: EdgeInsets.all(2.5),
                           child: TextField(
