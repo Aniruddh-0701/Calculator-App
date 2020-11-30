@@ -101,12 +101,10 @@ class Calculate {
       } else if (this.logFn.containsKey(k)) {
         this.result[j] = this.logFn[k](this.result[j + 1]);
         this.result.removeAt(j - 1);
-      }
-      // elif this.result[j] in this.hyp.keys(){
-      //   this.result[j] = this.hyp[this.result[j]](this.result[j + 1])
-      //   this.result.pop(j - 1)
-      // }
-      else if (this.l.contains(k)) {
+      } else if (this.hyp.containsKey(this.result[j])) {
+        this.result[j] = this.hyp[this.result[j]](this.result[j + 1]);
+        this.result.removeAt(j - 1);
+      } else if (this.l.contains(k)) {
         if (k == '\u{002b}')
           this.result[j - 2] += this.result[j - 1];
         else if (k == '\u{2212}')
