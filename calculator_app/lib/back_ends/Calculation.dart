@@ -1,12 +1,13 @@
-import 'dart:io';
-import 'dart:math';
+import 'dart:io'; // For testing
+import 'dart:math'; // For built-in mathematical functions
 import 'package:calculator_app/back_ends/mathfns.dart';
+// Other mathematical functions
 // import 'package:string_validator/string_validator.dart';
 
 class Calculate {
   List eqn = List();
   List result = List();
-  List op = List();
+  List operators = List();
   var isRad = 1;
 
   Map trig = {
@@ -38,6 +39,40 @@ class Calculate {
   List l = ['^', '\u{00d7}', '\u{00f7}', '%', '\u{002b}', '\u{2212}'];
   // RegExp digits = new RegExp(r"(\d+)");
 
+  Calculate(List eqn, {int rad = 1}) {
+    this.eqn = ['(', ...eqn, ')'];
+    this.isRad = rad;
+    // print(this.eqn);
+  }
+
+  calculate() {
+    int start, end;
+    if (eqn.where((e) => e == ')').length != eqn.where((e) => e == '(').length)
+      return 'Syntax Error';
+    while (this.eqn.contains(')')) {
+      end = this.eqn.indexOf(')');
+      for (int j = end; j > -1; j--) {
+        if (this.eqn[j] == '(') {
+          start = j;
+          break;
+        }
+      }
+      // print(this.eqn.sublist(start, end + 1));
+      this.genExpression(start + 1, end);
+      this.eqn = [
+        ...eqn.sublist(0, start),
+        this.genResult(),
+        ...eqn.sublist(end + 1, eqn.length)
+      ];
+      // print(this.eqn);
+    }
+    var value = this.eqn.first;
+    if (value.toInt().toDouble() == eqn.first)
+      return value.toInt();
+    else
+      return roundOff(value, 7);
+  }
+
   genExpression(int start, int end) {
     // print('gen_exp');
     this.result = List();
@@ -57,27 +92,21 @@ class Calculate {
           this.result.add(i);
         else if (this.invTrig.containsKey(i))
           this.result.add(i);
-        // else if( i in this.hyp.keys()
-        // this.result.add(i);
-        // else if i == "(":
-        //   this.op.append(i)
-        //else if i == ")":
-        //   while "(" in this.op and this.op[-1] != "(":
-        //      this.result.append(this.op.pop())
-        // this.op.pop()
+        else if (this.hyp.containsKey(i))
+          this.result.add(i);
         else {
-          if (this.op.length > 0 && this.op.last != "(") {
-            while (this.op.length > 0 &&
-                this.l.indexOf(i) > this.l.indexOf(this.op.last))
-              this.result.add(this.op.removeLast());
+          if (this.operators.length > 0 && this.operators.last != "(") {
+            while (this.operators.length > 0 &&
+                this.l.indexOf(i) > this.l.indexOf(this.operators.last))
+              this.result.add(this.operators.removeLast());
           }
-          this.op.add(i);
+          this.operators.add(i);
         }
-        // print('${this.result}, ${this.op}');
+        // print('${this.result}, ${this.operators}');
       }
     }
-    this.result.addAll(this.op.reversed);
-    this.op = List();
+    this.result.addAll(this.operators.reversed);
+    this.operators = List();
     // return (this.result)
     // print(this.result);
   }
@@ -125,43 +154,6 @@ class Calculate {
   }
 }
 
-class ECalculate extends Calculate {
-  ECalculate(List eqn, {int rad = 1}) {
-    this.eqn = ['(', ...eqn, ')'];
-    this.isRad = rad;
-    // print(this.eqn);
-  }
-
-  calculate() {
-    int start, end;
-    if (eqn.where((e) => e == ')').length != eqn.where((e) => e == '(').length)
-      return 'Syntax Error';
-    while (this.eqn.contains(')')) {
-      end = this.eqn.indexOf(')');
-      for (int j = end; j > -1; j--) {
-        if (this.eqn[j] == '(') {
-          start = j;
-          break;
-        }
-      }
-      // print(this.eqn.sublist(start, end + 1));
-      this.genExpression(start + 1, end);
-      // this.eqn.replaceRange(start, end + 1, this.genResult());
-      this.eqn = [
-        ...eqn.sublist(0, start),
-        this.genResult(),
-        ...eqn.sublist(end + 1, eqn.length)
-      ];
-      // print(this.eqn);
-    }
-    var value = this.eqn.first;
-    if (value.toInt().toDouble() == eqn.first)
-      return value.toInt();
-    else
-      return roundOff(value, 7);
-  }
-}
-
 bool isNumeric(String s) {
   if (s == null) {
     return false;
@@ -184,7 +176,7 @@ double roundOff(double value, int places) {
 void main() {
   List eqn = List();
   eqn = stdin.readLineSync().split(' ').toList();
-  var cal = ECalculate(eqn);
+  var cal = Calculate(eqn);
   print(cal.calculate());
   print(eqn);
   var x = '10.';
