@@ -15,10 +15,6 @@ class Calculate {
     'cos': cos,
     'tan': tan,
   };
-  Map logFn = {
-    'log': log,
-    'ln': log,
-  };
 
   Map invTrig = {
     'arcsin': asin,
@@ -34,6 +30,8 @@ class Calculate {
     'cosh': cosh,
     'tanh': tanh,
   };
+
+  var mathRegEx = 'arcsinharccosharctanhlnlog';
 
   // List l = ['^', '/', '*', '%', '+', '-'];
   List l = ['^', '\u{00d7}', '\u{00f7}', '%', '\u{002b}', '\u{2212}'];
@@ -76,30 +74,29 @@ class Calculate {
   genExpression(int start, int end) {
     // print('gen_exp');
     this.result = List();
+
+    //iterate through the expression in the innermost paranthesis
     var i;
     for (i in eqn.sublist(start, end)) {
       try {
+        // check if it is a number
         result.add(double.parse(i));
-        continue;
       } catch (e) {
-        if (i == 'pi')
+        if (i is double)
+          this.result.add(i);
+        // if not a number
+        else if (i == 'pi')
           this.result.add(pi);
         else if (i == 'e')
           this.result.add(e);
-        else if (this.trig.containsKey(i))
-          this.result.add(i);
-        else if (logFn.containsKey(i))
-          this.result.add(i);
-        else if (this.invTrig.containsKey(i))
-          this.result.add(i);
-        else if (this.hyp.containsKey(i))
+        else if (this.mathRegEx.contains(i)) // trigonometric function
           this.result.add(i);
         else {
-          if (this.operators.length > 0 && this.operators.last != "(") {
-            while (this.operators.length > 0 &&
-                this.l.indexOf(i) > this.l.indexOf(this.operators.last))
-              this.result.add(this.operators.removeLast());
-          }
+          // if (this.operators.length > 0 && this.operators.last != "(") {
+          while (this.operators.length > 0 &&
+              this.l.indexOf(i) > this.l.indexOf(this.operators.last))
+            this.result.add(this.operators.removeLast());
+          // }
           this.operators.add(i);
         }
         // print('${this.result}, ${this.operators}');
@@ -107,7 +104,7 @@ class Calculate {
     }
     this.result.addAll(this.operators.reversed);
     this.operators = List();
-    // return (this.result)
+    // return (this.result);
     // print(this.result);
   }
 
@@ -117,19 +114,22 @@ class Calculate {
     var j = 0;
     while (this.result.length > 1) {
       var k = this.result[j];
-      if (k is double)
+      if (k is double) {
         j += 1;
-      else if (this.trig.containsKey(k)) {
+      } else if (this.trig.containsKey(k)) {
         if (this.isRad == 0) this.result[j + 1] *= pi / 180;
         this.result[j] = this.trig[k](this.result[j + 1]);
-        this.result.removeAt(j - 1);
+        this.result.removeAt(j + 1);
       } else if (this.invTrig.containsKey(k)) {
         this.result[j] = this.invTrig[k](this.result[j + 1]);
-        this.result.removeAt(j - 1);
+        this.result.removeAt(j + 1);
         if (this.isRad == 0) this.result[j] *= 180 / pi;
-      } else if (this.logFn.containsKey(k)) {
-        this.result[j] = this.logFn[k](this.result[j + 1]);
-        this.result.removeAt(j - 1);
+      } else if (k == 'ln') {
+        this.result[j] = log(this.result[j + 1]);
+        this.result.removeAt(j + 1);
+      } else if (k.contains('log')) {
+        this.result[j] = logarithm(this.result.removeAt(j + 1),
+            base: double.parse(k.substring(3)));
       } else if (this.hyp.containsKey(this.result[j])) {
         this.result[j] = this.hyp[this.result[j]](this.result[j + 1]);
         this.result.removeAt(j - 1);
@@ -142,13 +142,16 @@ class Calculate {
           this.result[j - 2] *= this.result[j - 1];
         else if (k == '\u{00f7}')
           this.result[j - 2] /= this.result[j - 1];
-        else if (this.result[j] == '^') {}
-        // implementation needed this.result[j - 2] **= this.result[j - 1]
+        else if (this.result[j] == '^') {
+          this.result[j - 2] = pow(this.result[j - 2], this.result[j - 1]);
+        }
+
         this.result.removeAt(j - 1);
         this.result.removeAt(j - 1);
         j -= 1;
       }
       if (j >= this.result.length) j = 0;
+      // print('${this.result}');
     }
     return (this.result.first);
   }
@@ -178,7 +181,7 @@ void main() {
   eqn = stdin.readLineSync().split(' ').toList();
   var cal = Calculate(eqn);
   print(cal.calculate());
-  print(eqn);
-  var x = '10.';
-  print(isNumeric(x));
+  // print(eqn);
+  // var x = '10.';
+  // print(isNumeric(x));
 }

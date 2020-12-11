@@ -15,5 +15,7 @@ double arctanh(num x) => log((1 + x) / (1 - x)) / 2;
 double logarithm(num x, {num base = 10}) => log(x) / log(base);
 
 void main() {
-  print('${logarithm(8, base: 2)}');
+  var x = [10, 20];
+  // print('${logarithm(8, base: 2)}');
+  print('${x.removeAt(0)}');
 }

@@ -131,7 +131,7 @@ class _Calci extends State<Calci> {
                                 ))),
                         Expanded(
                             child: Text(
-                          'a =',
+                          'n =',
                           style: TextStyle(
                             color: Colors.black45,
                           ),
@@ -211,7 +211,7 @@ class _Calci extends State<Calci> {
                                             (states) => Colors.white)),
                                 onPressed: () {},
                                 child: Text(
-                                  'log\u{2081}\u{2080}',
+                                  'log\u{2099}',
                                   style: TextStyle(color: Colors.black45),
                                   textScaleFactor: 1.5,
                                 ),
@@ -226,9 +226,12 @@ class _Calci extends State<Calci> {
                                     backgroundColor:
                                         MaterialStateProperty.resolveWith(
                                             (states) => Colors.white)),
-                                onPressed: () {},
+                                onPressed: () {
+                                  eqn.add('(');
+                                  expr.text = eqn.join(' ');
+                                },
                                 child: Text(
-                                  'log\u{2090}',
+                                  '(',
                                   style: TextStyle(color: Colors.black45),
                                   textScaleFactor: 1.5,
                                 ),
@@ -240,23 +243,6 @@ class _Calci extends State<Calci> {
                     //pow
                     Row(
                       children: [
-                        Expanded(
-                          child: Container(
-                              height: 35,
-                              margin: EdgeInsets.all(2.5),
-                              child: ElevatedButton(
-                                style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.resolveWith(
-                                            (states) => Colors.white)),
-                                onPressed: () {},
-                                child: Text(
-                                  'x\u{00b2}',
-                                  style: TextStyle(color: Colors.black45),
-                                  textScaleFactor: 1.5,
-                                ),
-                              )),
-                        ),
                         Expanded(
                           child: Container(
                               height: 35,
@@ -286,6 +272,26 @@ class _Calci extends State<Calci> {
                                 onPressed: () {},
                                 child: Text(
                                   '\u{221a}',
+                                  style: TextStyle(color: Colors.black45),
+                                  textScaleFactor: 1.5,
+                                ),
+                              )),
+                        ),
+                        Expanded(
+                          child: Container(
+                              height: 35,
+                              margin: EdgeInsets.all(2.5),
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.resolveWith(
+                                            (states) => Colors.white)),
+                                onPressed: () {
+                                  eqn.add(')');
+                                  expr.text = eqn.join(' ');
+                                },
+                                child: Text(
+                                  ')',
                                   style: TextStyle(color: Colors.black45),
                                   textScaleFactor: 1.5,
                                 ),
@@ -599,8 +605,8 @@ class _Calci extends State<Calci> {
   }
 
   addTrig(fn) {
-    if (eqn.length != 0 || (eqn.length == 0 && eqn.first != 0)) {
-      if (isNumeric(eqn.last)) eqn.add('x');
+    if (eqn.length != 1 || (eqn.length == 1 && eqn.first != '0')) {
+      if (isNumeric(eqn.last)) eqn.add('\u{00d7}');
     } else {
       eqn.removeLast();
     }
