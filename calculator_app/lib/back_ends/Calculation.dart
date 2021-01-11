@@ -5,9 +5,9 @@ import 'package:calculator_app/back_ends/mathfns.dart';
 // import 'package:string_validator/string_validator.dart';
 
 class Calculate {
-  List eqn = List();
-  List result = List();
-  List operators = List();
+  List eqn = [];
+  List result = [];
+  List operators = [];
   var isRad = 1;
 
   Map trig = {
@@ -34,7 +34,7 @@ class Calculate {
   var mathRegEx = 'arcsinharccosharctanhlnlog';
 
   // List l = ['^', '/', '*', '%', '+', '-'];
-  List l = ['^', '\u{00d7}', '\u{00f7}', '%', '\u{002b}', '\u{2212}'];
+  List l = ['^', '\u{00f7}', '\u{00d7}', '%', '\u{002b}', '\u{2212}'];
   // RegExp digits = new RegExp(r"(\d+)");
 
   Calculate(List eqn, {int rad = 1}) {
@@ -73,9 +73,9 @@ class Calculate {
 
   genExpression(int start, int end) {
     // print('gen_exp');
-    this.result = List();
+    this.result = [];
 
-    //iterate through the expression in the innermost paranthesis
+    //iterate through the expression in the innermost parenthesis
     var i;
     for (i in eqn.sublist(start, end)) {
       try {
@@ -103,7 +103,7 @@ class Calculate {
       }
     }
     this.result.addAll(this.operators.reversed);
-    this.operators = List();
+    this.operators = [];
     // return (this.result);
     // print(this.result);
   }
@@ -151,7 +151,7 @@ class Calculate {
         j -= 1;
       }
       if (j >= this.result.length) j = 0;
-      // print('${this.result}');
+      // print('${this.result[j]}');
     }
     return (this.result.first);
   }
@@ -177,8 +177,11 @@ double roundOff(double value, int places) {
 
 // Main fn to test the code.
 void main() {
-  List eqn = List();
+  List eqn = [];
+  print('Enter a equation\n');
   eqn = stdin.readLineSync().split(' ').toList();
+  // eqn = "11 \u{00f7} 2 \u{00d7} 2 \u{00f7} 11".split(' ').toList();
+  print(eqn);
   var cal = Calculate(eqn);
   print(cal.calculate());
   // print(eqn);

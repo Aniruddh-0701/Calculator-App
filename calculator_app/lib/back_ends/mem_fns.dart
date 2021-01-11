@@ -2,7 +2,7 @@ var eqn;
 
 // AC
 void ac(){
-  eqn = List();
+  eqn = [];
 }
 
 //bksp
