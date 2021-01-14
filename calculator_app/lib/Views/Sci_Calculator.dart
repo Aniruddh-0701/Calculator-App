@@ -4,25 +4,28 @@ import 'package:flutter/material.dart';
 import 'package:calculator_app/back_ends/Calculation.dart';
 import 'package:flutter/widgets.dart';
 
-List eqn = ['0'];
+List equation = ['0'];
 
-class Calci extends StatefulWidget {
+class SCalci extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _Calci();
+    return _SCalci();
   }
 }
 
-class _Calci extends State<Calci> {
+class _SCalci extends State<SCalci> {
   TextEditingController expr = TextEditingController();
   TextEditingController base = TextEditingController();
   bool inv = false;
+  bool hyp = false;
   var angle = ['rad', 'deg'];
   var _defAngle = 'rad';
   var b = '2';
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
     return Padding(
         padding: EdgeInsets.all(10.0),
         child: ListView(
@@ -52,13 +55,13 @@ class _Calci extends State<Calci> {
                         // deg - rad, inv,
                         Row(
                           children: [
-                            // inv
+                            // hyp
                             Expanded(
                                 child: Container(
                                   height: 35,
                                   margin: EdgeInsets.only(top: 5.0, right: 2.5),
                                   child: Text(
-                                    'Inv',
+                                    'Hyp',
                                     style: TextStyle(
                                       color: Colors.black45,
                                     ),
@@ -72,37 +75,32 @@ class _Calci extends State<Calci> {
                                   margin:
                                   EdgeInsets.only(top: 2.5, left: 2.5, bottom: 5.0),
                                   child: Switch(
-                                    value: inv,
-                                    onChanged: (bool v) => setState(() => inv = v),
+                                    value: hyp,
+                                    onChanged: (bool v) => setState(() => hyp = v),
                                   ),
                                 )),
-                            // deg-rad
-                            Expanded(
-                                child: Text(
-                                  '\u{1d703} =',
-                                  style: TextStyle(color: Colors.black45),
-                                  textAlign: TextAlign.center,
+
+                            // deg-rad,
+                            Container(
+                                width: 55,
+                                height: 35,
+                                margin: EdgeInsets.all(2.5),
+                                child: DropdownButton(
+                                  items: angle
+                                      .map((String a) => DropdownMenuItem(
+                                    child: Text(
+                                      a,
+                                      style: TextStyle(
+                                          color: Colors.black45),
+                                    ),
+                                    value: a,
+                                  ))
+                                      .toList(),
+                                  onChanged: (String a) => setState(() {
+                                    this._defAngle = a;
+                                  }),
+                                  value: _defAngle,
                                 )),
-                            Expanded(
-                                child: Container(
-                                    height: 35,
-                                    margin: EdgeInsets.all(2.5),
-                                    child: DropdownButton(
-                                      items: angle
-                                          .map((String a) => DropdownMenuItem(
-                                        child: Text(
-                                          a,
-                                          style: TextStyle(
-                                              color: Colors.black45),
-                                        ),
-                                        value: a,
-                                      ))
-                                          .toList(),
-                                      onChanged: (String a) => setState(() {
-                                        this._defAngle = a;
-                                      }),
-                                      value: _defAngle,
-                                    ))),
                             // log base
                             Expanded(
                                 child: Text(
@@ -135,6 +133,115 @@ class _Calci extends State<Calci> {
                           ],
                         ),
 
+                        // log, inv, (
+                        Row(
+                          children: [
+
+                            // inv
+                            Expanded(
+                              child: Container(
+                                  height: 35,
+                                  margin: EdgeInsets.all(2.5),
+                                  child: ElevatedButton(
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                        MaterialStateProperty.resolveWith(
+                                                (states) => inv?
+                                                Colors.deepOrange :
+                                                Colors.white60
+                                        )),
+                                    onPressed: () => setState((){
+                                      if (inv) inv = false;
+                                      else inv = true;
+                                    })
+                                    ,
+                                    child: Text(
+                                      'Inv',
+                                      style: TextStyle(color: Colors.black45),
+                                      textScaleFactor: 1.5,
+                                    ),
+                                  )),
+                            ),
+
+                            // log_base
+                            Expanded(
+                                child: logButton(context, 'log\u{2099}')),
+
+                            // (
+                            Expanded(
+                              child: Container(
+                                  height: 35,
+                                  margin: EdgeInsets.all(2.5),
+                                  child: ElevatedButton(
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                        MaterialStateProperty.resolveWith(
+                                                (states) => Colors.white)),
+                                    onPressed: () {
+                                      equation.add('(');
+                                      expr.text = equation.join(' ');
+                                    },
+                                    child: Text(
+                                      '(',
+                                      style: TextStyle(color: Colors.black45),
+                                      textScaleFactor: 1.5,
+                                    ),
+                                  )),
+                            ),
+                          ],
+                        ),
+
+                        // pow
+                        Row(
+                          children: [
+
+                            // x^y
+                            Expanded(
+                              child: opButton(context, '^'),),
+
+                            // sqrt
+                            Expanded(
+                              child: Container(
+                                  height: 35,
+                                  margin: EdgeInsets.all(2.5),
+                                  child: ElevatedButton(
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                        MaterialStateProperty.resolveWith(
+                                                (states) => Colors.white)),
+                                    onPressed: null,
+                                    child: Text(
+                                      '\u{221a}',
+                                      style: TextStyle(color: Colors.black45),
+                                      textScaleFactor: 1.5,
+                                    ),
+                                  )),
+                            ),
+
+                            // )
+                            Expanded(
+                              child: Container(
+                                  height: 35,
+                                  margin: EdgeInsets.all(2.5),
+                                  child: ElevatedButton(
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                        MaterialStateProperty.resolveWith(
+                                                (states) => Colors.white)),
+                                    onPressed: () {
+                                      equation.add(')');
+                                      expr.text = equation.join(' ');
+                                    },
+                                    child: Text(
+                                      ')',
+                                      style: TextStyle(color: Colors.black45),
+                                      textScaleFactor: 1.5,
+                                    ),
+                                  )),
+                            ),
+                          ],
+                        ),
+
                         // trig
                         Row(
                           children: [
@@ -155,138 +262,6 @@ class _Calci extends State<Calci> {
                           ],
                         ),
 
-                        // log
-                        Row(
-                          children: [
-
-                            // ln
-                            Expanded(
-                              child: Container(
-                                  height: 35,
-                                  margin: EdgeInsets.all(2.5),
-                                  child: ElevatedButton(
-                                    style: ButtonStyle(
-                                        backgroundColor:
-                                        MaterialStateProperty.resolveWith(
-                                                (states) => Colors.white)),
-                                    onPressed: () {},
-                                    child: Text(
-                                      'ln',
-                                      style: TextStyle(color: Colors.black45),
-                                      textScaleFactor: 1.5,
-                                    ),
-                                  )),
-                            ),
-
-                            // log_base
-                            Expanded(
-                              child: Container(
-                                  height: 35,
-                                  margin: EdgeInsets.all(2.5),
-                                  child: ElevatedButton(
-                                    style: ButtonStyle(
-                                        backgroundColor:
-                                        MaterialStateProperty.resolveWith(
-                                                (states) => Colors.white)),
-                                    onPressed: () {},
-                                    child: Text(
-                                      'log\u{2099}',
-                                      style: TextStyle(color: Colors.black45),
-                                      textScaleFactor: 1.5,
-                                    ),
-                                  )),
-                            ),
-
-                            // (
-                            Expanded(
-                              child: Container(
-                                  height: 35,
-                                  margin: EdgeInsets.all(2.5),
-                                  child: ElevatedButton(
-                                    style: ButtonStyle(
-                                        backgroundColor:
-                                        MaterialStateProperty.resolveWith(
-                                                (states) => Colors.white)),
-                                    onPressed: () {
-                                      eqn.add('(');
-                                      expr.text = eqn.join(' ');
-                                    },
-                                    child: Text(
-                                      '(',
-                                      style: TextStyle(color: Colors.black45),
-                                      textScaleFactor: 1.5,
-                                    ),
-                                  )),
-                            ),
-                          ],
-                        ),
-
-                        // pow
-                        Row(
-                          children: [
-
-                            // x^y
-                            Expanded(
-                              child: Container(
-                                  height: 35,
-                                  margin: EdgeInsets.all(2.5),
-                                  child: ElevatedButton(
-                                    style: ButtonStyle(
-                                        backgroundColor:
-                                        MaterialStateProperty.resolveWith(
-                                                (states) => Colors.white)),
-                                    onPressed: () {},
-                                    child: Text(
-                                      'x\u{02b8}',
-                                      style: TextStyle(color: Colors.black45),
-                                      textScaleFactor: 1.5,
-                                    ),
-                                  )),
-                            ),
-
-                            // sqrt
-                            Expanded(
-                              child: Container(
-                                  height: 35,
-                                  margin: EdgeInsets.all(2.5),
-                                  child: ElevatedButton(
-                                    style: ButtonStyle(
-                                        backgroundColor:
-                                        MaterialStateProperty.resolveWith(
-                                                (states) => Colors.white)),
-                                    onPressed: () {},
-                                    child: Text(
-                                      '\u{221a}',
-                                      style: TextStyle(color: Colors.black45),
-                                      textScaleFactor: 1.5,
-                                    ),
-                                  )),
-                            ),
-
-                            // )
-                            Expanded(
-                              child: Container(
-                                  height: 35,
-                                  margin: EdgeInsets.all(2.5),
-                                  child: ElevatedButton(
-                                    style: ButtonStyle(
-                                        backgroundColor:
-                                        MaterialStateProperty.resolveWith(
-                                                (states) => Colors.white)),
-                                    onPressed: () {
-                                      eqn.add(')');
-                                      expr.text = eqn.join(' ');
-                                    },
-                                    child: Text(
-                                      ')',
-                                      style: TextStyle(color: Colors.black45),
-                                      textScaleFactor: 1.5,
-                                    ),
-                                  )),
-                            ),
-                          ],
-                        ),
-
                         // const
                         Row(
                           children: [
@@ -301,7 +276,7 @@ class _Calci extends State<Calci> {
                                         backgroundColor:
                                         MaterialStateProperty.resolveWith(
                                                 (states) => Colors.white)),
-                                    onPressed: () {},
+                                    onPressed: null,
                                     child: Text(
                                       'e\u{02e3}',
                                       style: TextStyle(color: Colors.black45),
@@ -312,41 +287,12 @@ class _Calci extends State<Calci> {
 
                             // Euler const
                             Expanded(
-                              child: Container(
-                                  height: 35,
-                                  margin: EdgeInsets.all(2.5),
-                                  child: ElevatedButton(
-                                    style: ButtonStyle(
-                                        backgroundColor:
-                                        MaterialStateProperty.resolveWith(
-                                                (states) => Colors.white)),
-                                    onPressed: () {},
-                                    child: Text(
-                                      '\u{212F}',
-                                      style: TextStyle(color: Colors.black45),
-                                      textScaleFactor: 1.5,
-                                    ),
-                                  )),
+                              child: numButton(context, 'e')
                             ),
 
                             // pi
                             Expanded(
-                              child: Container(
-                                  height: 35,
-                                  margin: EdgeInsets.all(2.5),
-                                  child: ElevatedButton(
-                                    style: ButtonStyle(
-                                        backgroundColor:
-                                        MaterialStateProperty.resolveWith(
-                                                (states) => Colors.white)),
-                                    onPressed: () {},
-                                    child: Text(
-                                      '\u{1d70b}',
-                                      style: TextStyle(color: Colors.black45),
-                                      textScaleFactor: 1.5,
-                                    ),
-                                  )),
-                            ),
+                                child: numButton(context, '\u{1d70b}')),
                           ],
                         ),
                       ],
@@ -356,6 +302,7 @@ class _Calci extends State<Calci> {
                 Expanded(
                     child: Column(
                       children: [
+                        // C, AC
                         Row(
                           children: <Widget>[
                             // AC
@@ -369,8 +316,8 @@ class _Calci extends State<Calci> {
                                           MaterialStateProperty.resolveWith(
                                                   (states) => Colors.white)),
                                       onPressed: () => setState(() {
-                                        eqn = ['0'];
-                                        expr.text = eqn.join(' ');
+                                        equation = ['0'];
+                                        expr.text = equation.join(' ');
                                       }),
                                       child: Text(
                                         'AC',
@@ -390,8 +337,8 @@ class _Calci extends State<Calci> {
                                           MaterialStateProperty.resolveWith(
                                                   (states) => Colors.white)),
                                       onPressed: () => setState(() {
-                                        eqn = ['0'];
-                                        expr.text = eqn.join(' ');
+                                        equation = ['0'];
+                                        expr.text = equation.join(' ');
                                       }),
                                       child: Text(
                                         'C',
@@ -412,14 +359,14 @@ class _Calci extends State<Calci> {
                                                   (states) => Colors.white)),
                                       onPressed: () => setState(() {
                                         try {
-                                          if (eqn.last.length == 1)
-                                            eqn.removeLast();
+                                          if (equation.last.length == 1)
+                                            equation.removeLast();
                                           else
-                                            eqn.last = eqn.last
-                                                .substring(0, eqn.last.length - 1);
-                                          if (eqn.length == 0) eqn = ['0'];
+                                            equation.last = equation.last
+                                                .substring(0, equation.last.length - 1);
+                                          if (equation.length == 0) equation = ['0'];
                                         } catch (e) {}
-                                        expr.text = eqn.join(' ');
+                                        expr.text = equation.join(' ');
                                       }),
                                       child: Text(
                                         '\u{232b}',
@@ -434,6 +381,7 @@ class _Calci extends State<Calci> {
                             ),
                           ],
                         ),
+                        // 7-9
                         Row(
                           children: <Widget>[
                             // 7
@@ -454,6 +402,7 @@ class _Calci extends State<Calci> {
                             ),
                           ],
                         ),
+                        // 4-6
                         Row(
                           children: <Widget>[
                             // 4
@@ -474,6 +423,7 @@ class _Calci extends State<Calci> {
                             ),
                           ],
                         ),
+                        // 1-3
                         Row(
                           children: <Widget>[
                             // 1
@@ -494,6 +444,7 @@ class _Calci extends State<Calci> {
                             ),
                           ],
                         ),
+                        // 0.E
                         Row(
                           children: <Widget>[
                             // 0
@@ -506,7 +457,7 @@ class _Calci extends State<Calci> {
                             ),
                             // E
                             Expanded(
-                              child: numButton(context, 'E'),
+                              child: numButton(context, 'E', isDisabled: 0),
                             ),
                             // =
                             Expanded(
@@ -520,9 +471,9 @@ class _Calci extends State<Calci> {
                                                   (states) => Theme.of(context)
                                                   .primaryColor)),
                                       onPressed: () => setState(() {
-                                        var cal = Calculate(eqn,
+                                        var cal = Calculate(equation,
                                             rad: _defAngle == 'rad' ? 1 : 0);
-                                        eqn = ['0'];
+                                        equation = ['0'];
                                         expr.text = cal.calculate().toString();
                                       }),
                                       child: Text(
@@ -541,7 +492,7 @@ class _Calci extends State<Calci> {
         ));
   }
 
-  Widget numButton(context, String num) {
+  Widget numButton(context, String num, {int isDisabled = 0}) {
     final button = Container(
         height: 35,
         margin: EdgeInsets.all(2.5),
@@ -555,14 +506,14 @@ class _Calci extends State<Calci> {
             style: TextStyle(
                 color: Colors.black45), // Theme.of(context).primaryColorDark,),
           ),
-          onPressed: () => setState(() {
-            if (num != '.' && eqn.length == 1 && eqn[0] == '0')
-              eqn[0] = num;
-            else if (isNumeric(eqn.last))
-              eqn.last += num;
+          onPressed: isDisabled==1 ? null: () => setState(() {
+            if (num != '.' && equation.length == 1 && equation[0] == '0')
+              equation[0] = num;
+            else if (isNumeric(equation.last))
+              equation.last += num;
             else
-              eqn.add(num);
-            expr.text = eqn.join(' ');
+              equation.add(num);
+            expr.text = equation.join(' ');
           }),
         ));
     return button;
@@ -588,8 +539,8 @@ class _Calci extends State<Calci> {
           ),
         ),
         onPressed: () => setState(() {
-          eqn.add(op);
-          expr.text = eqn.join(' ');
+          equation.add(op);
+          expr.text = equation.join(' ');
         }),
       ),
     );
@@ -616,18 +567,58 @@ class _Calci extends State<Calci> {
   }
 
   addTrig(fn) {
-    if (eqn.length != 1 || (eqn.length == 1 && eqn.first != '0')) {
-      if (isNumeric(eqn.last)) eqn.add('\u{00d7}');
+    if (equation.length != 1 || (equation.length == 1 && equation.first != '0')) {
+      if (isNumeric(equation.last)) equation.add('\u{00d7}');
     } else {
-      eqn.removeLast();
+      equation.removeLast();
     }
-    if (inv == false) {
-      eqn.add(fn);
+    if (hyp == true)  fn += 'h';
+    if (inv == true)  fn = 'arc'+fn;
+    equation.add(fn);
+    equation.add('(');
+    expr.text = equation.join(' ');
+  }
+
+  Widget logButton(context, String fn) {
+    final button = Container(
+        height: 35,
+        margin: EdgeInsets.all(2.5),
+        child: ElevatedButton(
+          style: ButtonStyle(
+              backgroundColor:
+              MaterialStateProperty.resolveWith((states) => Colors.white)),
+          child: Text(
+            fn,
+            textScaleFactor: 1.5,
+            style: TextStyle(
+                color: Colors.black45), // Theme.of(context).primaryColorDark,),
+          ),
+          onPressed: () => setState(() => addLog(fn)),
+        ));
+    return button;
+  }
+
+  addLog(String fn) {
+    if (equation.length != 1 || (equation.length == 1 && equation.first != '0')) {
+      if (isNumeric(equation.last)) equation.add('\u{00d7}');
     } else {
-      eqn.add('arc' + fn);
+      equation.removeLast();
     }
-    eqn.add('(');
-    expr.text = eqn.join(' ');
+    if (fn.contains('log')) fn = 'log';
+    if (inv == true) fn = 'anti'+fn;
+    if (fn.endsWith('ln')) equation.add(fn);
+    else  equation.add(fn + '${this.b}');
+    equation.add('(');
+    expr.text = equation.join(' ');
+    return 0;
+  }
+
+  String toSuperScript(x){
+    String superString = '';
+    for(String ch in x){
+      superString += superscript[ch];
+    }
+    return superString;
   }
 }
 
@@ -637,3 +628,6 @@ class _Calci extends State<Calci> {
 // * : \u{00d7}
 // / : \u{00f7}
 // bksp: \u{232b}
+// theta: \u{03b8}
+// pi: \u{1d70b}
+// euler's const: \u{212F}
