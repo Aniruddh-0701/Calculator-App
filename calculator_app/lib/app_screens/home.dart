@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+// import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:calculator_app/Views/Sci_Calculator.dart';
+import 'package:calculator_app/Views/SimpleCalci.dart';
 
 class DrawerItem {
   String title;
@@ -16,8 +18,7 @@ class SecondScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations(
-        [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
-
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Calculator',
@@ -37,9 +38,9 @@ class SecondScreen extends StatelessWidget {
 
 class ScientificCalculator extends StatefulWidget{
   final drawerItems = [
-    new DrawerItem("Fragment 1", Icons.rss_feed),
-    new DrawerItem("Fragment 2", Icons.local_pizza),
-    new DrawerItem("Fragment 3", Icons.info)
+    new DrawerItem("Simple Calculator", Icons.calculate),
+    new DrawerItem("Scientific Calculator", Icons.calculate_outlined),
+    // new DrawerItem("Fragment 3", FeatherIcons.calendar)
   ];
 
   @override
@@ -52,8 +53,20 @@ class _ScientificCalculator extends State<ScientificCalculator>{
 
   int _selectedDrawerIndex = 0;
 
+  _getDrawerItemWidget(int pos) {
+    switch (pos) {
+      case 0:
+        return Calci();
+      case 1:
+        return SCalci();
+      // case 2:
+        // return new ThirdFragment();
+      default:
+        return Text("Error");
+    }
+  }
+
   _onSelectItem(int index) {
-    debugPrint('$index clicked');
     setState(() => _selectedDrawerIndex = index);
     Navigator.of(context).pop(); // close the drawer
   }
@@ -78,17 +91,21 @@ class _ScientificCalculator extends State<ScientificCalculator>{
       appBar: AppBar(
         title: Text("Calculator"),
       ),
-      body: Padding(padding: EdgeInsets.zero, child: Center(child: Calci())),
-        drawer: new Drawer(
-          child: new Column(
-            children: <Widget>[
-              new UserAccountsDrawerHeader(
-                  accountName: new Text("John Doe"), accountEmail: null),
-              new Column(children: drawerOptions)
-            ],
-          ),
-
+      drawer: Drawer(
+        child: Column(
+          children: <Widget>[
+            DrawerHeader(
+              child: Text('Apps'),
+            ),
+            Column(children: drawerOptions)
+          ],
         ),
+      ),
+      body: Padding(
+          padding: EdgeInsets.zero,
+          child: Center(
+              child: _getDrawerItemWidget(_selectedDrawerIndex)
+          )),
     );
   }
 }
