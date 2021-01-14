@@ -1,8 +1,21 @@
 import 'dart:io'; // For testing
 import 'dart:math'; // For built-in mathematical functions
-import 'package:calculator_app/back_ends/mathfns.dart';
-// Other mathematical functions
-// import 'package:string_validator/string_validator.dart';
+// Other mathematical and logical functions
+import 'package:calculator_app/back_ends/CalculatorFunctions.dart';
+
+Map superscript = {
+  '0': '\u2070',
+  '1': '\u00B9',
+  '2': '\u00B2',
+  '3': '\u00B3',
+  '4': '\u2074',
+  '5': '\u2075',
+  '6': '\u2076',
+  '7': '\u2077',
+  '8': '\u2078',
+  '9': '\u2079',
+  'e': '\u1d49',
+};
 
 class Calculate {
   List eqn = [];
@@ -31,7 +44,7 @@ class Calculate {
     'tanh': tanh,
   };
 
-  var mathRegEx = 'arcsinharccosharctanhlnlog';
+  var mathRegEx = 'arcsinharccosharctanhln';
 
   // List l = ['^', '/', '*', '%', '+', '-'];
   List l = ['^', '\u{00f7}', '\u{00d7}', '%', '\u{002b}', '\u{2212}'];
@@ -59,13 +72,13 @@ class Calculate {
       this.genExpression(start + 1, end);
       this.eqn = [
         ...eqn.sublist(0, start),
-        this.genResult(),
+        this.genResult().toString(),
         ...eqn.sublist(end + 1, eqn.length)
       ];
       // print(this.eqn);
     }
-    var value = this.eqn.first;
-    if (value.toInt().toDouble() == eqn.first)
+    var value = toDouble(this.eqn.first);
+    if (value.toInt().toDouble() == value)
       return value.toInt();
     else
       return roundOff(value, 7);
@@ -76,27 +89,25 @@ class Calculate {
     this.result = [];
 
     //iterate through the expression in the innermost parenthesis
-    var i;
-    for (i in eqn.sublist(start, end)) {
+    for (String i in eqn.sublist(start, end)) {
+      if (i is double)
+        this.result.add(i);
+      // if not a double
       try {
         // check if it is a number
-        result.add(double.parse(i));
+        result.add(toDouble(i));
       } catch (e) {
-        if (i is double)
-          this.result.add(i);
-        // if not a number
-        else if (i == 'pi')
+        if (i == '\u{1d70b}')
           this.result.add(pi);
         else if (i == 'e')
           this.result.add(e);
         else if (this.mathRegEx.contains(i)) // trigonometric function
           this.result.add(i);
+        else if (i.contains('log')) this.result.add(i);
         else {
-          // if (this.operators.length > 0 && this.operators.last != "(") {
           while (this.operators.length > 0 &&
               this.l.indexOf(i) > this.l.indexOf(this.operators.last))
             this.result.add(this.operators.removeLast());
-          // }
           this.operators.add(i);
         }
         // print('${this.result}, ${this.operators}');
@@ -114,6 +125,8 @@ class Calculate {
     var j = 0;
     while (this.result.length > 1) {
       var k = this.result[j];
+      // print(k);
+      if (k == null) break;
       if (k is double) {
         j += 1;
       } else if (this.trig.containsKey(k)) {
@@ -127,12 +140,15 @@ class Calculate {
       } else if (k == 'ln') {
         this.result[j] = log(this.result[j + 1]);
         this.result.removeAt(j + 1);
+      } else if(k.contains('anti')){
+        this.result[j] = antilogarithm(this.result.removeAt(j + 1),
+            double.parse(k.substring(7)));
       } else if (k.contains('log')) {
         this.result[j] = logarithm(this.result.removeAt(j + 1),
             base: double.parse(k.substring(3)));
       } else if (this.hyp.containsKey(this.result[j])) {
         this.result[j] = this.hyp[this.result[j]](this.result[j + 1]);
-        this.result.removeAt(j - 1);
+        this.result.removeAt(j + 1);
       } else if (this.l.contains(k)) {
         if (k == '\u{002b}')
           this.result[j - 2] += this.result[j - 1];
@@ -145,7 +161,6 @@ class Calculate {
         else if (this.result[j] == '^') {
           this.result[j - 2] = pow(this.result[j - 2], this.result[j - 1]);
         }
-
         this.result.removeAt(j - 1);
         this.result.removeAt(j - 1);
         j -= 1;
@@ -161,16 +176,12 @@ bool isNumeric(String s) {
   if (s == null) {
     return false;
   }
+  if (s.endsWith('E')) return true;
   try {
-    return double.parse(s) != null;
+    return toDouble(s) != null;
   } catch (e) {
     return false;
   }
-}
-
-double roundOff(double value, int places) {
-  double mod = pow(10.0, places);
-  return ((value * mod).round().toDouble() / mod);
 }
 
 // int boolToInt(bool v) => v? 1:0 ;

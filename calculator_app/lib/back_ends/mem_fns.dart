@@ -1,3 +1,4 @@
+// Functions associated with calculator memory
 var eqn;
 
 // AC
