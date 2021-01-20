@@ -22,7 +22,7 @@ class _Calci extends State<Calci> {
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown,]);
     return Padding(
         padding: EdgeInsets.all(10.0),
-        child: Column(
+        child: ListView(
             children: <Widget>[
               // Expression box
               Container(
