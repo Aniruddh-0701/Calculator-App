@@ -1,8 +1,11 @@
+import 'package:calculator_app/Views/InterestCalculator.dart';
+import 'package:calculator_app/Views/Settings.dart';
+import 'package:calculator_app/Views/UnitConverter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-// import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:calculator_app/Views/Sci_Calculator.dart';
 import 'package:calculator_app/Views/SimpleCalci.dart';
 
@@ -26,7 +29,7 @@ class SecondScreen extends StatelessWidget {
       theme: ThemeData(
         primaryColor: Colors.blueGrey,
         accentColor: Colors.blueAccent,
-        // primaryColorDark: Colors.green,
+        primaryColorDark: Colors.grey[800],
         primaryColorBrightness: Brightness.dark,
         // brightness: Brightness.dark,
         backgroundColor: Colors.indigo,
@@ -40,7 +43,9 @@ class ScientificCalculator extends StatefulWidget{
   final drawerItems = [
     new DrawerItem("Simple Calculator", Icons.calculate),
     new DrawerItem("Scientific Calculator", Icons.calculate_outlined),
-    // new DrawerItem("Fragment 3", FeatherIcons.calendar)
+    new DrawerItem("Interest Calculator", Icons.monetization_on_outlined),
+    new DrawerItem("Unit Converter", FeatherIcons.arrowRightCircle),
+    new DrawerItem("Settings", Icons.settings)
   ];
 
   @override
@@ -52,6 +57,14 @@ class ScientificCalculator extends StatefulWidget{
 class _ScientificCalculator extends State<ScientificCalculator>{
 
   int _selectedDrawerIndex = 0;
+  String scaffoldTitle = 'Calculator';
+  final drawerItems = [
+    'Calculator',
+    'Scientific Calculator',
+    'Interest Calculator',
+    'Unit Converter',
+    'Settings',
+  ];
 
   _getDrawerItemWidget(int pos) {
     switch (pos) {
@@ -59,15 +72,22 @@ class _ScientificCalculator extends State<ScientificCalculator>{
         return Calci();
       case 1:
         return SCalci();
-      // case 2:
-        // return new ThirdFragment();
+      case 2:
+        return SiForm();
+      case 3:
+        return UnitConverter();
+      case 4:
+        return Settings();
       default:
         return Text("Error");
     }
   }
 
   _onSelectItem(int index) {
-    setState(() => _selectedDrawerIndex = index);
+    setState(() {
+      _selectedDrawerIndex = index;
+      scaffoldTitle = drawerItems[index];
+    });
     Navigator.of(context).pop(); // close the drawer
   }
 
@@ -89,10 +109,10 @@ class _ScientificCalculator extends State<ScientificCalculator>{
     return Scaffold(
       // resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-        title: Text("Calculator"),
+        title: Text(this.scaffoldTitle),
       ),
       drawer: Drawer(
-        child: Column(
+        child: ListView(
           children: <Widget>[
             DrawerHeader(
               child: Text('Apps'),

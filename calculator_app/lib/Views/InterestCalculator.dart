@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
-
 import 'dart:math';
 import 'package:calculator_app/back_ends/Calculation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class SiForm extends StatefulWidget {
   @override
@@ -41,6 +41,8 @@ class _SiForm extends State<SiForm> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     TextStyle textStyle = Theme.of(context).textTheme.headline6;
 
     return Form(
@@ -169,13 +171,13 @@ class _SiForm extends State<SiForm> {
                     ),
                     Expanded(
                         child: RaisedButton(
-                      textColor: Theme.of(context).primaryColor,
-                      color: Theme.of(context).primaryColorDark,
-                      child: Text(
-                        "Reset",
-                        textScaleFactor: 1.5,
-                      ),
-                      onPressed: () => setState(() => _reset()),
+                          textColor: Theme.of(context).primaryColor,
+                          color: Theme.of(context).primaryColorDark,
+                          child: Text(
+                            "Reset",
+                            textScaleFactor: 1.5,
+                          ),
+                          onPressed: () => setState(() => _reset()),
                     )),
                   ],
                 ),
