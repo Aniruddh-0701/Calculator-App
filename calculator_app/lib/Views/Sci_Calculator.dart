@@ -21,7 +21,7 @@ class _SCalci extends State<SCalci> {
   bool hyp = false;
   var angle = ['rad', 'deg'];
   var _defAngle = 'rad';
-  String b = '2';
+  String b = '10';
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +131,7 @@ class _SCalci extends State<SCalci> {
                                       decoration: InputDecoration(
                                         // labelText: 'base',
 
-                                        hintText: '2',
+                                        hintText: '10',
                                       ),
                                     ))),
                           ],
@@ -275,24 +275,9 @@ class _SCalci extends State<SCalci> {
                         // const
                         Row(
                           children: [
-
-                            // exp function
+                            // factorial
                             Expanded(
-                              child: Container(
-                                  height: 35,
-                                  margin: EdgeInsets.all(2.5),
-                                  child: ElevatedButton(
-                                    style: ButtonStyle(
-                                        backgroundColor:
-                                        MaterialStateProperty.resolveWith(
-                                                (states) => Colors.white)),
-                                    onPressed: null,
-                                    child: Text(
-                                      'e\u{02e3}',
-                                      style: TextStyle(color: Colors.black45),
-                                      textScaleFactor: 1.5,
-                                    ),
-                                  )),
+                                child: numButton(context, '!')
                             ),
 
                             // Euler const

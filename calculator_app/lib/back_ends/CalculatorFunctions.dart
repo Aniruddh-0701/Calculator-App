@@ -40,6 +40,14 @@ double toDouble(String x) {
     else notation = x.split('\u{1d70b}');
     var exp = double.parse(notation[0]);
     return exp * pi;
+  } else if(x.contains('!')){
+    String number = x.substring(0, x.length-1);
+    num n = toDouble(number);
+    if(n.toInt().toDouble() == n)
+      n = factorial(n.toInt());
+    else
+      n = factorialFromGamma(n.toDouble());
+    return n.toDouble();
   } else{
    try{
      return double.parse(x);
@@ -99,9 +107,26 @@ String superscriptToText(String x) {
   return text;
 }
 
+int factorial(int n) {
+  List<int> factorialResult = [1];
+  for (int i = 1; i <= n; i++) {
+    factorialResult.add(i * factorialResult[i - 1]);
+  }
+  return factorialResult[n];
+}
+
+// Approximate function for factorial from gamma
+// Work by Gergo Nemes, Hungary, refer..
+// http://www.rskey.org/CMS/index.php/the-library/11
+
+double factorialFromGamma(double x){
+  double factorialVal = pow(e, -x) * sqrt(2*pi*x) * pow((x + 1/(12*x) +
+      1/(1440 * pow(x,3)) + 239/(362880 * pow(x, 5))), x);
+  double error = pow(x, -8)*0.802919;
+  // print(error);
+  return factorialVal-error;
+}
+
 void main() {
-  // var x = [10, 20];
-  // print('${logarithm(8, base: 2)}');
-  print(toDouble('2\u{1d70b}'));
-  // print('${nthRoot(4, 2)}');
+  print(factorialFromGamma(5.5).toDouble());
 }

@@ -149,7 +149,7 @@ class Calculate {
         this.result[j] = pow(this.result[j+1],
             1/toDouble(superscriptToText(exponent)));
         this.result.removeAt(j + 1);
-      } else if (this.l.contains(k)) {
+      }else if (this.l.contains(k)) {
         if (k == '\u{002b}')
           this.result[j - 2] += this.result[j - 1];
         else if (k == '\u{2212}')
@@ -179,7 +179,8 @@ void main() {
   List eqn = [];
   print('Enter a equation\n');
   // eqn = stdin.readLineSync()!.split(' ').toList();
-  eqn = "11 \u{00f7} 2 \u{00d7} 2 \u{00f7} 11".split(' ').toList();
+  // eqn = "11 \u{00f7} 2 \u{00d7} 2 \u{00f7} 11".split(' ').toList();
+  eqn = ['5.5!'];
   print(eqn);
   var cal = Calculate(eqn);
   print(cal.calculate());
