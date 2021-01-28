@@ -1,5 +1,5 @@
 name: calculator_app
-description: A new Flutter application.
+description: A Flutter Calculator App.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0-0 <3.0.0"
 
 dependencies:
   flutter:
@@ -34,8 +34,14 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: "^0.8.0"
-#  string_validator: '^0.1.4'
   flutter_launcher_name: "^0.0.1"
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "images/icon.png"
+  adaptive_icon_background: "images/ico_bg.png"
+  adaptive_icon_foreground: "images/icon.png"
 
 flutter_launcher_name:
   name: "Calculator"
@@ -56,7 +62,7 @@ flutter:
     - images/ico_bg.png
     - images/SI_image.png
     - images/under_construction.jpg
-  #   - images/a_dot_ham.jpeg
+    - images/icon.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
