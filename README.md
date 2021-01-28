@@ -5,9 +5,8 @@ Android, iOS and Desktop Calculator.
 ## Simple Calculator
 
 Calculator containing basic arithmetic functionalities (+, -, *, /).
-<center>
-<img src="Screenshots\Simple_Calculator.jpg" alt='Simple Calculator' width=250 height=100/>
-</center>
+
+![Simple Calculator](Screenshots/Simple_Calculator.jpg "Simple Calculator")
 
 ## Scientific Calculator
 
@@ -23,15 +22,13 @@ Calculator with:
 
 5. Math constants 'e' and &#960;
 
-[Scientific Calculator](Screenshots\Scientific_Calculator.jpg "Scientific Calculator")
+![Scientific Calculator](Screenshots/Scientific_Calculator.jpg "Scientific Calculator")
 
 ## Interest Calculator
 
 Basic Simple Interest and Compound Interest calculator
 
-<center>
-<img alt='Interest Calculator' src='Screenshots/Interest_Calculator.jpg' width=250 height=100/>
-</center>
+![Interest Calculator](Screenshots/Interest_Calculator.jpg "Interest Calculator")
 
 ## Unit Coverter
 
@@ -39,6 +36,4 @@ Currently under Construction
 
 ## App Drawer
 
-<center>
-<img alt='App Drawer' src='Screenshots/App_Drawer.jpg' width=250 height=100/>
-</center>
+![App Drawer](Screenshots/App_Drawer.jpg "App_Drawer")
