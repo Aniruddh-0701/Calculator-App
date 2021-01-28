@@ -51,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
 class StartLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    AssetImage assetImage = AssetImage('images/ico_bg.png');
+    AssetImage assetImage = AssetImage('images/icon.png');
     Image image = Image(
       image: assetImage,
       width: 440.5,

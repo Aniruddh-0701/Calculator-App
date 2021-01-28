@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'dart:math';
-import 'package:calculator_app/back_ends/Calculation.dart';
+import 'package:calculator_app/back_ends/CalculatorFunctions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -43,7 +43,7 @@ class _SiForm extends State<SiForm> {
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-    TextStyle textStyle = Theme.of(context).textTheme.headline6;
+    TextStyle textStyle = Theme.of(context).textTheme.headline6!;
 
     return Form(
         key: _formKey,
@@ -57,7 +57,7 @@ class _SiForm extends State<SiForm> {
                 child: TextFormField(
                   controller: _principal,
                   keyboardType: TextInputType.number,
-                  validator: ((val) => val.isEmpty || !isNumeric(val)
+                  validator: ((val) => val!.isEmpty || !isNumeric(val)
                       ? 'Please Enter a valid Principal'
                       : null),
                   decoration: InputDecoration(
@@ -77,7 +77,7 @@ class _SiForm extends State<SiForm> {
                     // style: textStyle,
                     keyboardType: TextInputType.number,
                     controller: _rate,
-                    validator: ((val) => val.isEmpty || !isNumeric(val)
+                    validator: ((val) => val!.isEmpty || !isNumeric(val)
                         ? 'Please Enter a valid ROI'
                         : null),
                     decoration: InputDecoration(
@@ -99,7 +99,7 @@ class _SiForm extends State<SiForm> {
                         // style: textStyle,
                         keyboardType: TextInputType.number,
                         controller: _time,
-                        validator: ((val) => val.isEmpty || !isNumeric(val)
+                        validator: ((val) => val!.isEmpty || !isNumeric(val)
                             ? 'Invalid time'
                             : null),
                         decoration: InputDecoration(
@@ -125,7 +125,9 @@ class _SiForm extends State<SiForm> {
                           );
                         }).toList(),
                         value: _defCurr,
-                        onChanged: (String oCurr) => onSelect(oCurr),
+                        onChanged: (var oCurr){
+                          onSelect(oCurr.toString());
+                          },
                       )),
                       Container(
                         width: _minMargin,
@@ -139,7 +141,7 @@ class _SiForm extends State<SiForm> {
                           );
                         }).toList(),
                         value: _defInt,
-                        onChanged: (String oInt) => onSelectInt(oInt),
+                        onChanged: (var oInt) => onSelectInt(oInt.toString()),
                       )),
                     ],
                   )),
@@ -148,36 +150,41 @@ class _SiForm extends State<SiForm> {
                 child: Row(
                   children: <Widget>[
                     Expanded(
-                        child: RaisedButton(
-                      color: Theme.of(context).primaryColor,
-                      textColor: Theme.of(context).primaryColorDark,
-                      child: Text(
-                        "Calculate",
-                        textScaleFactor: 1.5,
-                      ),
-                      onPressed: () => setState(() {
-                        if (_formKey.currentState.validate()) {
-                          var interest = calculateInterest();
-                          this._op = [
-                            'Interest = '
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.resolveWith(
+                              (states) => Theme.of(context).primaryColor)),
+                          child: Text(
+                            "Calculate",
+                            textScaleFactor: 1.5,
+                            style: TextStyle(
+                                color: Theme.of(context).primaryColorDark),
+                          ),
+                          onPressed: () => setState(() {
+                            if (_formKey.currentState!.validate()) {
+                              var interest = calculateInterest();
+                              this._op = [
+                                'Interest = '
                                 '${_defCurr[_defCurr.length - 1]} ${interest[0]}',
-                            'Amount = ${_defCurr[_defCurr.length - 1]} ${interest[1]}'
-                          ];
-                        }
-                      }),
-                    )),
+                                'Amount = ${_defCurr[_defCurr.length - 1]} ${interest[1]}'
+                              ];
+                            }
+                          }),
+                        )),
                     Container(
                       width: _minMargin * 3,
                     ),
                     Expanded(
-                        child: RaisedButton(
-                          textColor: Theme.of(context).primaryColor,
-                          color: Theme.of(context).primaryColorDark,
-                          child: Text(
-                            "Reset",
-                            textScaleFactor: 1.5,
-                          ),
-                          onPressed: () => setState(() => _reset()),
+                        child: ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.resolveWith(
+                              (states) => Theme.of(context).primaryColorDark)),
+                      child: Text(
+                        "Reset",
+                        textScaleFactor: 1.5,
+                        style: TextStyle(color: Theme.of(context).primaryColor),
+                      ),
+                      onPressed: () => setState(() => _reset()),
                     )),
                   ],
                 ),

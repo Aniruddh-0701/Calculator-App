@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:calculator_app/Views/Sci_Calculator.dart';
 import 'package:calculator_app/Views/SimpleCalci.dart';
 
@@ -44,7 +43,7 @@ class ScientificCalculator extends StatefulWidget{
     new DrawerItem("Simple Calculator", Icons.calculate),
     new DrawerItem("Scientific Calculator", Icons.calculate_outlined),
     new DrawerItem("Interest Calculator", Icons.monetization_on_outlined),
-    new DrawerItem("Unit Converter", FeatherIcons.arrowRightCircle),
+    new DrawerItem("Unit Converter", Icons.compare_arrows_rounded),
     new DrawerItem("Settings", Icons.settings)
   ];
 

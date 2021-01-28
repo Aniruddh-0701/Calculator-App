@@ -1,4 +1,4 @@
-import 'dart:io'; // For testing
+// import 'dart:io'; // For testing
 import 'dart:math'; // For built-in mathematical functions
 // Other mathematical and logical functions
 import 'package:calculator_app/back_ends/CalculatorFunctions.dart';
@@ -30,21 +30,23 @@ class Calculate {
   };
 
   Map invTrig = {
-    'arcsin': asin,
-    'arccos': acos,
-    'arctan': atan,
+    'sin\u207B\u00b9': asin,
+    'cos\u207B\u00b9': acos,
+    'tan\u207B\u00b9': atan,
   };
 
   Map hyp = {
-    'arcsinh': arcsinh,
-    'arccosh': arccosh,
-    'arctanh': arctanh,
+    'sinh\u207B\u00b9': arcsinh,
+    'cosh\u207B\u00b9': arccosh,
+    'tanh\u207B\u00b9': arctanh,
     'sinh': sinh,
     'cosh': cosh,
     'tanh': tanh,
   };
 
-  var mathRegEx = 'arcsinharccosharctanhln';
+  var mathRegEx = 'sin\u207B\u00b9sinh\u207B\u00b9'
+      'cos\u207B\u00b9cosh\u207B\u00b9'
+      'tan\u207B\u00b9tanh\u207B\u00b9';
 
   // List l = ['^', '/', '*', '%', '+', '-'];
   List l = ['^', '\u{00f7}', '\u{00d7}', '%', '\u{002b}', '\u{2212}'];
@@ -57,7 +59,7 @@ class Calculate {
   }
 
   calculate() {
-    int start, end;
+    int start = 0, end = 0;
     if (eqn.where((e) => e == ')').length != eqn.where((e) => e == '(').length)
       return 'Syntax Error';
     while (this.eqn.contains(')')) {
@@ -90,28 +92,25 @@ class Calculate {
 
     //iterate through the expression in the innermost parenthesis
     for (String i in eqn.sublist(start, end)) {
-      if (i is double)
-        this.result.add(i);
+      if (i is double) this.result.add(i);
       // if not a double
-      try {
-        // check if it is a number
-        result.add(toDouble(i));
-      } catch (e) {
-        if (i == '\u{1d70b}')
-          this.result.add(pi);
-        else if (i == 'e')
-          this.result.add(e);
-        else if (this.mathRegEx.contains(i)) // trigonometric function
-          this.result.add(i);
-        else if (i.contains('log')) this.result.add(i);
-        else {
-          while (this.operators.length > 0 &&
-              this.l.indexOf(i) > this.l.indexOf(this.operators.last))
-            this.result.add(this.operators.removeLast());
-          this.operators.add(i);
-        }
-        // print('${this.result}, ${this.operators}');
+      // check if it is a number
+      var d = toDouble(i);
+      if (d != double.infinity)
+        result.add(d);
+      else if (i.contains('\u{221a}'))
+        this.result.add(i);
+      else if (this.mathRegEx.contains(i)) // trigonometric function
+        this.result.add(i);
+      else if (i.contains('log'))
+        this.result.add(i);
+      else {
+        while (this.operators.length > 0 &&
+            this.l.indexOf(i) > this.l.indexOf(this.operators.last))
+          this.result.add(this.operators.removeLast());
+        this.operators.add(i);
       }
+      // print('${this.result}, ${this.operators}');
     }
     this.result.addAll(this.operators.reversed);
     this.operators = [];
@@ -126,7 +125,6 @@ class Calculate {
     while (this.result.length > 1) {
       var k = this.result[j];
       // print(k);
-      if (k == null) break;
       if (k is double) {
         j += 1;
       } else if (this.trig.containsKey(k)) {
@@ -137,17 +135,19 @@ class Calculate {
         this.result[j] = this.invTrig[k](this.result[j + 1]);
         this.result.removeAt(j + 1);
         if (this.isRad == 0) this.result[j] *= 180 / pi;
-      } else if (k == 'ln') {
-        this.result[j] = log(this.result[j + 1]);
-        this.result.removeAt(j + 1);
-      } else if(k.contains('anti')){
+      } else if (k.contains('anti')) {
         this.result[j] = antilogarithm(this.result.removeAt(j + 1),
-            double.parse(k.substring(7)));
+            toDouble(subscriptToText(k.substring(7))));
       } else if (k.contains('log')) {
         this.result[j] = logarithm(this.result.removeAt(j + 1),
-            base: double.parse(k.substring(3)));
-      } else if (this.hyp.containsKey(this.result[j])) {
-        this.result[j] = this.hyp[this.result[j]](this.result[j + 1]);
+            base: toDouble(subscriptToText(k.substring(3))));
+      } else if (this.hyp.containsKey(k)) {
+        this.result[j] = this.hyp[k](this.result[j + 1]);
+        this.result.removeAt(j + 1);
+      }else if(k.contains('\u{221a}')){
+        String exponent = k.substring(0, k.length -1);
+        this.result[j] = pow(this.result[j+1],
+            1/toDouble(superscriptToText(exponent)));
         this.result.removeAt(j + 1);
       } else if (this.l.contains(k)) {
         if (k == '\u{002b}')
@@ -172,26 +172,14 @@ class Calculate {
   }
 }
 
-bool isNumeric(String s) {
-  if (s == null) {
-    return false;
-  }
-  if (s.endsWith('E')) return true;
-  try {
-    return toDouble(s) != null;
-  } catch (e) {
-    return false;
-  }
-}
-
 // int boolToInt(bool v) => v? 1:0 ;
 
 // Main fn to test the code.
 void main() {
   List eqn = [];
   print('Enter a equation\n');
-  eqn = stdin.readLineSync().split(' ').toList();
-  // eqn = "11 \u{00f7} 2 \u{00d7} 2 \u{00f7} 11".split(' ').toList();
+  // eqn = stdin.readLineSync()!.split(' ').toList();
+  eqn = "11 \u{00f7} 2 \u{00d7} 2 \u{00f7} 11".split(' ').toList();
   print(eqn);
   var cal = Calculate(eqn);
   print(cal.calculate());

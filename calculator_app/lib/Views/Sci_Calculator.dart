@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:calculator_app/back_ends/Calculation.dart';
+import 'package:calculator_app/back_ends/CalculatorFunctions.dart';
 import 'package:flutter/widgets.dart';
 
 List equation = ['0'];
@@ -20,7 +21,7 @@ class _SCalci extends State<SCalci> {
   bool hyp = false;
   var angle = ['rad', 'deg'];
   var _defAngle = 'rad';
-  var b = '2';
+  String b = '2';
 
   @override
   Widget build(BuildContext context) {
@@ -96,8 +97,8 @@ class _SCalci extends State<SCalci> {
                                     value: a,
                                   ))
                                       .toList(),
-                                  onChanged: (String a) => setState(() {
-                                    this._defAngle = a;
+                                  onChanged: (var a) => setState(() {
+                                    this._defAngle = a.toString();
                                   }),
                                   value: _defAngle,
                                 )),
@@ -115,14 +116,17 @@ class _SCalci extends State<SCalci> {
                                 child: Container(
                                     height: 35,
                                     margin: EdgeInsets.all(2.5),
-                                    child: TextField(
+                                    child: TextFormField(
                                       controller: base,
+                                      validator: ((val) => val!.isEmpty && !isNumeric(val)
+                                          ? 'Invalid base'
+                                          : null),
                                       style: TextStyle(
                                         color: Colors.black45,
                                       ),
                                       keyboardType: TextInputType.number,
-                                      onSubmitted: (String base) {
-                                        this.b = base;
+                                      onChanged: (String base){
+                                        setState(()=> this.b = base);
                                       },
                                       decoration: InputDecoration(
                                         // labelText: 'base',
@@ -165,7 +169,7 @@ class _SCalci extends State<SCalci> {
 
                             // log_base
                             Expanded(
-                                child: logButton(context, 'log\u{2099}')),
+                                child: logButton(context, 'log', b)),
 
                             // (
                             Expanded(
@@ -197,10 +201,6 @@ class _SCalci extends State<SCalci> {
 
                             // x^y
                             Expanded(
-                              child: opButton(context, '^'),),
-
-                            // sqrt
-                            Expanded(
                               child: Container(
                                   height: 35,
                                   margin: EdgeInsets.all(2.5),
@@ -209,14 +209,24 @@ class _SCalci extends State<SCalci> {
                                         backgroundColor:
                                         MaterialStateProperty.resolveWith(
                                                 (states) => Colors.white)),
-                                    onPressed: null,
+                                    onPressed: (){
+                                      this.inv? addPowers('\u{221a}')
+                                          : addPowers('^');
+                                    },
                                     child: Text(
-                                      '\u{221a}',
+                                      this.inv? '\u{221a}':'^',
                                       style: TextStyle(color: Colors.black45),
                                       textScaleFactor: 1.5,
                                     ),
-                                  )),
+                                  )
+                              ),
                             ),
+
+                            // ln
+                            Expanded(
+                                child: logButton(context, 'log', 'e'),
+                            ),
+
 
                             // )
                             Expanded(
@@ -492,7 +502,7 @@ class _SCalci extends State<SCalci> {
         ));
   }
 
-  Widget numButton(context, String num, {int isDisabled = 0}) {
+  Widget numButton(BuildContext context, String num, {int isDisabled = 0}) {
     final button = Container(
         height: 35,
         margin: EdgeInsets.all(2.5),
@@ -519,7 +529,7 @@ class _SCalci extends State<SCalci> {
     return button;
   }
 
-  Widget opButton(context, String op) {
+  Widget opButton(BuildContext context, String op) {
     final button = Container(
       height: 35,
       margin: EdgeInsets.all(2.5),
@@ -547,7 +557,9 @@ class _SCalci extends State<SCalci> {
     return button;
   }
 
-  Widget trigButton(context, String fn) {
+  Widget trigButton(BuildContext context, String fn) {
+    fn = hyp? fn+'h':fn;
+    fn = inv? fn+"\u207B\u00b9":fn;
     final button = Container(
         height: 35,
         margin: EdgeInsets.all(2.5),
@@ -555,8 +567,7 @@ class _SCalci extends State<SCalci> {
           style: ButtonStyle(
               backgroundColor:
               MaterialStateProperty.resolveWith((states) => Colors.white)),
-          child: Text(
-            fn,
+          child: Text(fn,
             textScaleFactor: 1.5,
             style: TextStyle(
                 color: Colors.black45), // Theme.of(context).primaryColorDark,),
@@ -572,14 +583,13 @@ class _SCalci extends State<SCalci> {
     } else {
       equation.removeLast();
     }
-    if (hyp == true)  fn += 'h';
-    if (inv == true)  fn = 'arc'+fn;
     equation.add(fn);
     equation.add('(');
     expr.text = equation.join(' ');
   }
 
-  Widget logButton(context, String fn) {
+  Widget logButton(BuildContext context, String fn, base) {
+    fn = inv? 'anti'+fn+toSubscript(base): fn+toSubscript(base);
     final button = Container(
         height: 35,
         margin: EdgeInsets.all(2.5),
@@ -604,21 +614,27 @@ class _SCalci extends State<SCalci> {
     } else {
       equation.removeLast();
     }
-    if (fn.contains('log')) fn = 'log';
-    if (inv == true) fn = 'anti'+fn;
-    if (fn.endsWith('ln')) equation.add(fn);
-    else  equation.add(fn + '${this.b}');
+    equation.add(fn);
     equation.add('(');
     expr.text = equation.join(' ');
     return 0;
   }
 
-  String toSuperScript(x){
-    String superString = '';
-    for(String ch in x){
-      superString += superscript[ch];
+  addPowers(op){
+    if (op=='^'){
+      setState(() {
+        equation.add(op);
+      });
+    }else{
+      String num='2';
+      if (equation.length == 1 && equation[0] == '0')
+        equation[0] = num;
+      else if (!isNumeric(equation.last))
+        equation.add(num);
+      equation.last = toSuperscript(equation.last) + '\u{221a}';
+      equation.add('(');
     }
-    return superString;
+    expr.text = equation.join(' ');
   }
 }
 
@@ -631,3 +647,4 @@ class _SCalci extends State<SCalci> {
 // theta: \u{03b8}
 // pi: \u{1d70b}
 // euler's const: \u{212F}
+// radical: \u{221a}
