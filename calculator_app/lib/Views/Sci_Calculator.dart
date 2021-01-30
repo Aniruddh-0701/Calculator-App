@@ -7,6 +7,8 @@ import 'package:flutter/widgets.dart';
 
 List equation = ['0'];
 
+var cal = Calculate();
+
 class SCalci extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -160,7 +162,7 @@ class _SCalci extends State<SCalci> {
                                     })
                                     ,
                                     child: Text(
-                                      'Inv',
+                                      'Shift',
                                       style: TextStyle(color: Colors.black45),
                                       textScaleFactor: 1.5,
                                     ),
@@ -182,6 +184,12 @@ class _SCalci extends State<SCalci> {
                                         MaterialStateProperty.resolveWith(
                                                 (states) => Colors.white)),
                                     onPressed: () {
+                                      if(equation.length==1){
+                                        if (equation.first=='0')
+                                          equation.removeLast();
+                                        else
+                                          equation.add('\u00d7');
+                                      }
                                       equation.add('(');
                                       expr.text = equation.join(' ');
                                     },
@@ -313,6 +321,7 @@ class _SCalci extends State<SCalci> {
                                       onPressed: () => setState(() {
                                         equation = ['0'];
                                         expr.text = equation.join(' ');
+                                        inv = false;
                                       }),
                                       child: Text(
                                         'AC',
@@ -334,6 +343,7 @@ class _SCalci extends State<SCalci> {
                                       onPressed: () => setState(() {
                                         equation = ['0'];
                                         expr.text = equation.join(' ');
+                                        inv = false;
                                       }),
                                       child: Text(
                                         'C',
@@ -452,8 +462,10 @@ class _SCalci extends State<SCalci> {
                             ),
                             // E
                             Expanded(
-                              child: numButton(context, 'E', isDisabled: 0),
+                              child: inv? opButton(context, 'Ans'):
+                              numButton(context, 'E'),
                             ),
+
                             // =
                             Expanded(
                                 child: Container(
@@ -466,10 +478,11 @@ class _SCalci extends State<SCalci> {
                                                   (states) => Theme.of(context)
                                                   .primaryColor)),
                                       onPressed: () => setState(() {
-                                        var cal = Calculate(equation,
-                                            rad: _defAngle == 'rad' ? 1 : 0);
+                                        expr.text = cal.calculate(
+                                            equation,
+                                            rad: _defAngle == 'rad' ? 1 : 0
+                                        ).toString();
                                         equation = ['0'];
-                                        expr.text = cal.calculate().toString();
                                       }),
                                       child: Text(
                                         '=',
@@ -534,6 +547,7 @@ class _SCalci extends State<SCalci> {
           ),
         ),
         onPressed: () => setState(() {
+          if (op=='Ans')  equation.removeLast();
           equation.add(op);
           expr.text = equation.join(' ');
         }),
@@ -633,3 +647,14 @@ class _SCalci extends State<SCalci> {
 // pi: \u{1d70b}
 // euler's const: \u{212F}
 // radical: \u{221a}
+
+
+// Widget bookFlight(BuildContext context) {
+//     var alertDialog = AlertDialog(
+//       title: Text("Booking confirmation"),
+//       content: Text("Your Flight booking was successful"),
+//     );
+//     showDialog(
+//         context: context, builder: (BuildContext context) => alertDialog);
+//     return null;
+//   }

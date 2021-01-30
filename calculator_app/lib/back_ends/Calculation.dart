@@ -21,6 +21,7 @@ class Calculate {
   List eqn = [];
   List result = [];
   List operators = [];
+  double finalVal = 0.0;
   var isRad = 1;
 
   Map trig = {
@@ -52,38 +53,35 @@ class Calculate {
   List l = ['^', '\u{00f7}', '\u{00d7}', '%', '\u{002b}', '\u{2212}'];
   // RegExp digits = new RegExp(r"(\d+)");
 
-  Calculate(List eqn, {int rad = 1}) {
+  calculate(List eqn, {int rad = 1}) {
     this.eqn = ['(', ...eqn, ')'];
     this.isRad = rad;
-    // print(this.eqn);
-  }
-
-  calculate() {
     int start = 0, end = 0;
     if (eqn.where((e) => e == ')').length != eqn.where((e) => e == '(').length)
       return 'Syntax Error';
     while (this.eqn.contains(')')) {
       end = this.eqn.indexOf(')');
-      for (int j = end; j > -1; j--) {
+      for (int j = end; j > -1; --j) {
         if (this.eqn[j] == '(') {
           start = j;
           break;
         }
       }
+
       // print(this.eqn.sublist(start, end + 1));
       this.genExpression(start + 1, end);
       this.eqn = [
-        ...eqn.sublist(0, start),
+        ...this.eqn.sublist(0, start),
         this.genResult().toString(),
-        ...eqn.sublist(end + 1, eqn.length)
+      ...this.eqn.sublist(end+1, this.eqn.length),
       ];
-      // print(this.eqn);
+
     }
-    var value = toDouble(this.eqn.first);
-    if (value.toInt().toDouble() == value)
-      return value.toInt();
+    finalVal = toDouble(this.eqn.first);
+    if (finalVal.toInt().toDouble() == finalVal)
+      return finalVal.toInt();
     else
-      return roundOff(value, 7);
+      return roundOff(finalVal, 7);
   }
 
   genExpression(int start, int end) {
@@ -98,6 +96,7 @@ class Calculate {
       var d = toDouble(i);
       if (d != double.infinity)
         result.add(d);
+      else if(i == 'Ans') result.add(finalVal);
       else if (i.contains('\u{221a}'))
         this.result.add(i);
       else if (this.mathRegEx.contains(i)) // trigonometric function
@@ -144,12 +143,12 @@ class Calculate {
       } else if (this.hyp.containsKey(k)) {
         this.result[j] = this.hyp[k](this.result[j + 1]);
         this.result.removeAt(j + 1);
-      }else if(k.contains('\u{221a}')){
-        String exponent = k.substring(0, k.length -1);
-        this.result[j] = pow(this.result[j+1],
-            1/toDouble(superscriptToText(exponent)));
+      } else if (k.contains('\u{221a}')) {
+        String exponent = k.substring(0, k.length - 1);
+        this.result[j] =
+            pow(this.result[j + 1], 1 / toDouble(superscriptToText(exponent)));
         this.result.removeAt(j + 1);
-      }else if (this.l.contains(k)) {
+      } else if (this.l.contains(k)) {
         if (k == '\u{002b}')
           this.result[j - 2] += this.result[j - 1];
         else if (k == '\u{2212}')
@@ -182,8 +181,8 @@ void main() {
   // eqn = "11 \u{00f7} 2 \u{00d7} 2 \u{00f7} 11".split(' ').toList();
   eqn = ['5.5!'];
   print(eqn);
-  var cal = Calculate(eqn);
-  print(cal.calculate());
+  var cal = Calculate();
+  print(cal.calculate(eqn));
   // print(eqn);
   // var x = '10.';
   // print(isNumeric(x));

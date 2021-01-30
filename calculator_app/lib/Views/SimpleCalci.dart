@@ -6,6 +6,7 @@ import 'package:calculator_app/back_ends/CalculatorFunctions.dart';
 import 'package:flutter/widgets.dart';
 
 List eqn = ['0'];
+var cal = Calculate();
 
 class Calci extends StatefulWidget {
   @override
@@ -191,9 +192,8 @@ class _Calci extends State<Calci> {
                                         (states) => Theme.of(context)
                                         .primaryColor)),
                             onPressed: () => setState(() {
-                              var cal = Calculate(eqn);
+                              expr.text = cal.calculate(eqn).toString();
                               eqn = ['0'];
-                              expr.text = cal.calculate().toString();
                             }),
                             child: Text(
                               '=',
