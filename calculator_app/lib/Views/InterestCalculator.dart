@@ -125,9 +125,9 @@ class _SiForm extends State<SiForm> {
                           );
                         }).toList(),
                         value: _defCurr,
-                        onChanged: (var oCurr){
+                        onChanged: (var oCurr) {
                           onSelect(oCurr.toString());
-                          },
+                        },
                       )),
                       Container(
                         width: _minMargin,
@@ -151,37 +151,37 @@ class _SiForm extends State<SiForm> {
                   children: <Widget>[
                     Expanded(
                         child: ElevatedButton(
-                          style: ButtonStyle(
+                      style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.resolveWith(
                               (states) => Theme.of(context).primaryColor)),
-                          child: Text(
-                            "Calculate",
-                            textScaleFactor: 1.5,
-                            style: TextStyle(
-                                color: Theme.of(context).primaryColorDark),
-                          ),
-                          onPressed: () => setState(() {
-                            if (_formKey.currentState!.validate()) {
-                              var interest = calculateInterest();
-                              this._op = [
-                                'Interest = '
+                      child: Text(
+                        "Calculate",
+                        textScaleFactor: 1.5,
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColorDark),
+                      ),
+                      onPressed: () => setState(() {
+                        if (_formKey.currentState!.validate()) {
+                          var interest = calculateInterest();
+                          this._op = [
+                            'Interest = '
                                 '${_defCurr[_defCurr.length - 1]} ${interest[0]}',
-                                'Amount = ${_defCurr[_defCurr.length - 1]} ${interest[1]}'
-                              ];
-                            }
-                          }),
-                        )),
+                            'Amount = ${_defCurr[_defCurr.length - 1]} ${interest[1]}'
+                          ];
+                        }
+                      }),
+                    )),
                     Container(
                       width: _minMargin * 3,
                     ),
                     Expanded(
                         child: ElevatedButton(
-                      style: ButtonStyle(
+                          style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.resolveWith(
                               (states) => Theme.of(context).primaryColorDark)),
-                      child: Text(
-                        "Reset",
-                        textScaleFactor: 1.5,
+                          child: Text(
+                            "Reset",
+                            textScaleFactor: 1.5,
                         style: TextStyle(color: Theme.of(context).primaryColor),
                       ),
                       onPressed: () => setState(() => _reset()),
