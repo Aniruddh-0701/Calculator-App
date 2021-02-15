@@ -44,10 +44,11 @@ class _Calci extends State<Calci> {
                     ),
                     decoration: InputDecoration(
                       hintText: 'Enter an expression',
-                      fillColor: Colors.white,
+                      fillColor: Theme.of(context).accentColor,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
-                        borderSide: BorderSide(color: Colors.white, width: 0.0)
+                        borderSide: BorderSide(
+                            color: Theme.of(context).accentColor, width: 0.0)
                       ),
                     )
                 ),
@@ -67,7 +68,7 @@ class _Calci extends State<Calci> {
                             style: ButtonStyle(
                                 backgroundColor:
                                 MaterialStateProperty.resolveWith(
-                                        (states) => Colors.white)),
+                                        (states) => Theme.of(context).accentColor)),
                             onPressed: () => setState(() {
                               eqn = ['0'];
                               expr.text = eqn.join(' ');
@@ -88,7 +89,7 @@ class _Calci extends State<Calci> {
                             style: ButtonStyle(
                                 backgroundColor:
                                 MaterialStateProperty.resolveWith(
-                                        (states) => Colors.white)),
+                                        (states) => Theme.of(context).accentColor)),
                             onPressed: () => setState(() {
                               eqn = ['0'];
                               expr.text = eqn.join(' ');
@@ -109,7 +110,7 @@ class _Calci extends State<Calci> {
                             style: ButtonStyle(
                                 backgroundColor:
                                 MaterialStateProperty.resolveWith(
-                                        (states) => Colors.white)),
+                                        (states) => Theme.of(context).accentColor)),
                             onPressed: () => setState(() {
                               try {
                                 if (eqn.last.length == 1)
@@ -197,7 +198,7 @@ class _Calci extends State<Calci> {
                             }),
                             child: Text(
                               '=',
-                              style: TextStyle(color: Colors.white),
+                              style: TextStyle(color: Theme.of(context).accentColor),
                               textScaleFactor: 1.5,
                             ),
                           ))),
@@ -216,7 +217,7 @@ class _Calci extends State<Calci> {
         child: ElevatedButton(
           style: ButtonStyle(
               backgroundColor:
-              MaterialStateProperty.resolveWith((states) => Colors.white)),
+              MaterialStateProperty.resolveWith((states) => Theme.of(context).accentColor)),
           child: Text(num,
             textScaleFactor: 1.5,
             style: TextStyle(

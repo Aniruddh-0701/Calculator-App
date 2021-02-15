@@ -25,14 +25,17 @@ double roundOff(double value, int places) {
 double toDouble(String x) {
   if (x.contains('E')) {
     var notation = x.split('E');
+    if (notation.length == 1) notation.add('1.0');
+    else if(notation.last=='') notation.last='1.0';
     var exp = notation.map((element) => double.parse(element)).toList();
-    if (exp.length == 1) exp.add(1.0);
     return exp.first * (pow(10, exp.last));
   } else if (x.contains('e')) {
     var notation = x.split('e');
+    if (notation.length == 1) notation.add('1.0');
+    else if(notation.last=='') notation.last='1.0';
     List exp = notation.map((element) => double.parse(element)).toList();
     if (exp == []) exp = [1.0, 1.0];
-    if (exp.length == 1) exp.add(1.0);
+    if (exp.length == 1) exp.add(0.0);
     return exp.first * (pow(e, exp.last));
   } else if (x.endsWith('\u{1d70b}')) { // pi
     List notation;
