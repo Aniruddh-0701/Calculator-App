@@ -1,6 +1,8 @@
 // import 'dart:io';
 import 'dart:math';
+import 'package:calculator_app/back_ends/CalculatorFunctions.dart';
 
+//length units
 Map<String, double> length = {
   'km': 1000.0,
   'm': 1.0,
@@ -12,6 +14,8 @@ Map<String, double> length = {
   'mi': 1609.344,
   '\u{00b5}m': 0.000001
 };
+
+//mass units
 Map<String, double> mass = {
   'g': 0.001,
   'kg': 1.0,
@@ -20,6 +24,8 @@ Map<String, double> mass = {
   'ton': 907.185,
   'tonne': 1000.0,
 };
+
+// volume units
 Map<String, double> volume = {
   'cm\u00B3': pow(0.01, 3).toDouble(),
   'm\u00B3': 1.0,
@@ -36,20 +42,44 @@ Map<String, double> volume = {
   'pint': 0.000568261,
 };
 
+// force units
+Map<String, double> force = {
+  'N': 1.0,
+  'kgf': 9.80665,
+  'dyne': 0.00001,
+  'lbf': 4.4482216153,
+  'gf': 0.00980665,
+  'pdl': 0.1382250,
+};
+
+//pressure units
+Map<String, double> pressure = {
+  'Pa': 1.0,
+  'bar': 100000,
+  'atm': 101325,
+  'psi': 6894.75729,
+  'torr': 101325 / 760,
+};
+
+//temperature units
 List<String> temperatureUnits = ['K', '\u00b0C', '\u00b0F', '\u00b0R'];
 
+//length converter
 double lengthConverter(double val, String fromUnit, String toUnit) {
-  return val * length[fromUnit]! / length[toUnit]!;
+  return roundOff(val * length[fromUnit]! / length[toUnit]!, 7);
 }
 
+//mass converter
 double massConverter(double val, String fromUnit, String toUnit) {
-  return val * mass[fromUnit]! / mass[toUnit]!;
+  return roundOff(val * mass[fromUnit]! / mass[toUnit]!, 7);
 }
 
+//volume converter
 double volumeConverter(double val, String fromUnit, String toUnit) {
-  return val * volume[fromUnit]! / volume[toUnit]!;
+  return roundOff(val * volume[fromUnit]! / volume[toUnit]!, 7);
 }
 
+//temperature converter
 double temperatureConverter(double val, String fromUnit, String toUnit) {
   double temperature = val;
   switch (fromUnit) {
@@ -78,7 +108,17 @@ double temperatureConverter(double val, String fromUnit, String toUnit) {
     default:
       temperature /= 1.0;
   }
-  return temperature;
+  return roundOff(temperature, 7);
+}
+
+//force converter
+double forceConverter(double val, String fromUnit, String toUnit) {
+  return roundOff(val * force[fromUnit]! / force[toUnit]!, 7);
+}
+
+//pressure converter
+double pressureConverter(double val, String fromUnit, String toUnit) {
+  return roundOff(val * pressure[fromUnit]! / pressure[toUnit]!, 7);
 }
 
 void main() {
