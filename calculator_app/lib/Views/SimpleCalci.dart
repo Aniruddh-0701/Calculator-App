@@ -24,12 +24,13 @@ class _Calci extends State<Calci> {
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown,]);
     return Padding(
         padding: EdgeInsets.all(10.0),
-        child: ListView(
+        child: Column(
             children: <Widget>[
               // Expression box
+              // Expanded(child: )
               Container(
                 padding: EdgeInsets.only(top:30.0,),
-                height: 150,
+                height: 0.2 * MediaQuery.of(context).size.height,
                 child: TextField(
                     controller: expr,
                     readOnly: true,
@@ -39,16 +40,16 @@ class _Calci extends State<Calci> {
                     textAlignVertical: TextAlignVertical.center,
                     maxLines: 5,
                     style: TextStyle(
-                      fontSize: 20.0,
-                      height: 1.0,
+                      fontSize: 0.025 * MediaQuery.of(context).size.height,
                     ),
                     decoration: InputDecoration(
                       hintText: 'Enter an expression',
                       fillColor: Theme.of(context).accentColor,
+                      focusedBorder: InputBorder.none,
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: BorderSide(
-                            color: Theme.of(context).accentColor, width: 0.0)
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: BorderSide(
+                              color: Theme.of(context).accentColor, width: 0.0)
                       ),
                     )
                 ),
@@ -62,9 +63,9 @@ class _Calci extends State<Calci> {
                   // AC
                   Expanded(
                       child: Container(
-                          height: 35,
+                          height: 0.1 * MediaQuery.of(context).size.height,
                           margin: EdgeInsets.all(2.5),
-                          child: ElevatedButton(
+                          child: TextButton(
                             style: ButtonStyle(
                                 backgroundColor:
                                 MaterialStateProperty.resolveWith(
@@ -75,7 +76,10 @@ class _Calci extends State<Calci> {
                             }),
                             child: Text(
                               'AC',
-                              style: TextStyle(color: Colors.black45),
+                              style: TextStyle(
+                                  color: Colors.deepOrange,
+                                fontSize: 0.02 * MediaQuery.of(context).size.height,
+                              ),
                               textScaleFactor: 1.5,
                             ),
                           ))),
@@ -83,9 +87,9 @@ class _Calci extends State<Calci> {
                   // CE
                   Expanded(
                       child: Container(
-                          height: 35,
+                          height: 0.1 * MediaQuery.of(context).size.height,
                           margin: EdgeInsets.all(2.5),
-                          child: ElevatedButton(
+                          child: TextButton(
                             style: ButtonStyle(
                                 backgroundColor:
                                 MaterialStateProperty.resolveWith(
@@ -96,7 +100,10 @@ class _Calci extends State<Calci> {
                             }),
                             child: Text(
                               'C',
-                              style: TextStyle(color: Colors.black45),
+                              style: TextStyle(
+                                  color: Colors.deepOrange,
+                                fontSize: 0.02 * MediaQuery.of(context).size.height,
+                              ),
                               textScaleFactor: 1.5,
                             ),
                           ))),
@@ -104,9 +111,9 @@ class _Calci extends State<Calci> {
                   // BKSP
                   Expanded(
                       child: Container(
-                          height: 30,
+                          height: 0.1 * MediaQuery.of(context).size.height,
                           margin: EdgeInsets.all(2.5),
-                          child: ElevatedButton(
+                          child: TextButton(
                             style: ButtonStyle(
                                 backgroundColor:
                                 MaterialStateProperty.resolveWith(
@@ -124,14 +131,16 @@ class _Calci extends State<Calci> {
                             }),
                             child: Text(
                               '\u{232b}',
-                              style: TextStyle(color: Colors.black45),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                fontSize: 0.02 * MediaQuery.of(context).size.height,
+                              ),
                               textScaleFactor: 1.5,
                             ),
                           ))),
 
                   // div
-                  Expanded(
-                    child: opButton(context, '\u{00F7}'),
+                  opButton(context, '\u{00F7}',
                   ),
                 ],
               ),
@@ -142,7 +151,7 @@ class _Calci extends State<Calci> {
                   Expanded(child: numButton(context, '7')),
                   Expanded(child: numButton(context, '8')),
                   Expanded(child: numButton(context, '9')),
-                  Expanded(child: opButton(context, '\u{00d7}')),
+                  opButton(context, '\u{00d7}'),
                 ],
               ),
 
@@ -152,7 +161,7 @@ class _Calci extends State<Calci> {
                   Expanded(child: numButton(context, '4')),
                   Expanded(child: numButton(context, '5')),
                   Expanded(child: numButton(context, '6')),
-                  Expanded(child: opButton(context, '\u{2212}')),
+                  opButton(context, '\u{2212}'),
                 ],
               ),
 
@@ -162,7 +171,7 @@ class _Calci extends State<Calci> {
                   Expanded(child: numButton(context, '1')),
                   Expanded(child: numButton(context, '2')),
                   Expanded(child: numButton(context, '3')),
-                  Expanded(child: opButton(context, '\u{002b}')),
+                  opButton(context, '\u{002b}'),
                 ],
               ),
 
@@ -182,26 +191,33 @@ class _Calci extends State<Calci> {
                     child: numButton(context, 'E', isDisabled: 0),
                   ),
                   // =
-                  Expanded(
-                      child: Container(
-                          height: 35,
+                  Container(
+                          height: 0.1 * MediaQuery.of(context).size.height,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Theme.of(context)
+                                .primaryColor,
+                          ),
                           margin: EdgeInsets.all(2.5),
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                                backgroundColor:
-                                MaterialStateProperty.resolveWith(
-                                        (states) => Theme.of(context)
-                                        .primaryColor)),
+                          child: TextButton(
+                            // style: ButtonStyle(
+                            //     backgroundColor:
+                            //     MaterialStateProperty.resolveWith(
+                            //             (states) => Theme.of(context)
+                            //             .primaryColor)),
                             onPressed: () => setState(() {
                               expr.text = cal.calculate(eqn).toString();
                               eqn = ['0'];
                             }),
                             child: Text(
                               '=',
-                              style: TextStyle(color: Theme.of(context).accentColor),
+                              style: TextStyle(
+                                  color: Theme.of(context).accentColor,
+                                fontSize: 0.03 * MediaQuery.of(context).size.height,
+                              ),
                               textScaleFactor: 1.5,
                             ),
-                          ))),
+                          )),
                 ],
               ),
 
@@ -212,16 +228,18 @@ class _Calci extends State<Calci> {
 
   Widget numButton(context, String num, {int isDisabled = 0}) {
     final button = Container(
-        height: 35,
+        height: 0.1 * MediaQuery.of(context).size.height,
         margin: EdgeInsets.all(2.5),
-        child: ElevatedButton(
+        child: TextButton(
           style: ButtonStyle(
               backgroundColor:
               MaterialStateProperty.resolveWith((states) => Theme.of(context).accentColor)),
           child: Text(num,
             textScaleFactor: 1.5,
             style: TextStyle(
-                color: Colors.black45), // Theme.of(context).primaryColorDark,),
+                color: Colors.black45,
+              fontSize: 0.02 * MediaQuery.of(context).size.height,
+            ), // Theme.of(context).primaryColorDark,),
           ),
           onPressed: isDisabled==1 ? null: () => setState(() {
             if (num != '.' && eqn.length == 1 && eqn[0] == '0')
@@ -238,9 +256,9 @@ class _Calci extends State<Calci> {
 
   Widget opButton(context, String op) {
     final button = Container(
-      height: 35,
+      height: 0.1 * MediaQuery.of(context).size.height,
       margin: EdgeInsets.all(2.5),
-      child: ElevatedButton(
+      child: TextButton(
         style: ButtonStyle(
             shape: MaterialStateProperty.resolveWith(
                     (states) => RoundedRectangleBorder(
@@ -253,6 +271,7 @@ class _Calci extends State<Calci> {
           textScaleFactor: 1.5,
           style: TextStyle(
             color: Theme.of(context).primaryColor,
+            fontSize: 0.02 * MediaQuery.of(context).size.height,
           ),
         ),
         onPressed: () => setState(() {

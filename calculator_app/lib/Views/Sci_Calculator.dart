@@ -40,6 +40,7 @@ class _SCalci extends State<SCalci> {
                 readOnly: true,
                 textDirection: TextDirection.ltr,
                 textAlign: TextAlign.right,
+                style: TextStyle(fontSize: 0.04 * MediaQuery.of(context).size.height),
                 decoration: InputDecoration(
                   hintText: 'Enter an expression',
                   border: OutlineInputBorder(
@@ -61,12 +62,13 @@ class _SCalci extends State<SCalci> {
                             // hyp
                             Expanded(
                                 child: Container(
-                                  height: 35,
+                                  height: 0.1 * MediaQuery.of(context).size.height,
                                   margin: EdgeInsets.only(top: 5.0, right: 2.5),
                                   child: Text(
                                     'Hyp',
                                     style: TextStyle(
                                       color: Colors.black45,
+                                      fontSize: 0.035 * MediaQuery.of(context).size.height,
                                     ),
                                     textScaleFactor: 1.5,
                                     textAlign: TextAlign.right,
@@ -74,7 +76,7 @@ class _SCalci extends State<SCalci> {
                                 )),
                             Expanded(
                                 child: Container(
-                                  height: 30,
+                                  height: 0.1 * MediaQuery.of(context).size.height,
                                   margin:
                                   EdgeInsets.only(top: 2.5, left: 2.5, bottom: 5.0),
                                   child: Switch(
@@ -85,8 +87,8 @@ class _SCalci extends State<SCalci> {
 
                             // deg-rad,
                             Container(
-                                width: 55,
-                                height: 35,
+                                width: 0.0765 * MediaQuery.of(context).size.width,
+                                height: 0.1 * MediaQuery.of(context).size.height,
                                 margin: EdgeInsets.all(2.5),
                                 child: DropdownButton(
                                   items: angle
@@ -94,7 +96,9 @@ class _SCalci extends State<SCalci> {
                                     child: Text(
                                       a,
                                       style: TextStyle(
-                                          color: Colors.black45),
+                                          color: Colors.black45,
+                                        fontSize: 0.045 * MediaQuery.of(context).size.height,
+                                      ),
                                     ),
                                     value: a,
                                   ))
@@ -110,21 +114,26 @@ class _SCalci extends State<SCalci> {
                                   'n =',
                                   style: TextStyle(
                                     color: Colors.black45,
+                                    fontSize: 0.035 * MediaQuery.of(context).size.height,
                                   ),
                                   textScaleFactor: 1.5,
                                   textAlign: TextAlign.center,
                                 )),
                             Expanded(
-                                child: Container(
-                                    height: 35,
+                                child:
+                                Container(
+                                    width: 0.05 * MediaQuery.of(context).size.width,
+                                    height: 0.1 * MediaQuery.of(context).size.height,
                                     margin: EdgeInsets.all(2.5),
                                     child: TextFormField(
                                       controller: base,
                                       validator: ((val) => val!.isEmpty && !isNumeric(val)
                                           ? 'Invalid base'
                                           : null),
+                                      textAlign: TextAlign.center,
                                       style: TextStyle(
                                         color: Colors.black45,
+                                        fontSize: 0.035 * MediaQuery.of(context).size.height,
                                       ),
                                       keyboardType: TextInputType.number,
                                       onChanged: (String base){
@@ -132,7 +141,9 @@ class _SCalci extends State<SCalci> {
                                       },
                                       decoration: InputDecoration(
                                         // labelText: 'base',
-
+                                        hintStyle: TextStyle(
+                                          fontSize: 0.04 * MediaQuery.of(context).size.height,
+                                        ),
                                         hintText: '10',
                                       ),
                                     ))),
@@ -143,10 +154,10 @@ class _SCalci extends State<SCalci> {
                         Row(
                           children: [
 
-                            // inv
+                            // Shift (toggle inverse)
                             Expanded(
                               child: Container(
-                                  height: 35,
+                                  height: 0.1 * MediaQuery.of(context).size.height,
                                   margin: EdgeInsets.all(2.5),
                                   child: ElevatedButton(
                                     style: ButtonStyle(
@@ -163,7 +174,10 @@ class _SCalci extends State<SCalci> {
                                     ,
                                     child: Text(
                                       'Shift',
-                                      style: TextStyle(color: Colors.black45),
+                                      style: TextStyle(
+                                          color: Colors.black45,
+                                        fontSize: 0.035 * MediaQuery.of(context).size.height,
+                                      ),
                                       textScaleFactor: 1.5,
                                     ),
                                   )),
@@ -176,7 +190,7 @@ class _SCalci extends State<SCalci> {
                             // (
                             Expanded(
                               child: Container(
-                                  height: 35,
+                                  height: 0.1 * MediaQuery.of(context).size.height,
                                   margin: EdgeInsets.all(2.5),
                                   child: ElevatedButton(
                                     style: ButtonStyle(
@@ -195,7 +209,10 @@ class _SCalci extends State<SCalci> {
                                     },
                                     child: Text(
                                       '(',
-                                      style: TextStyle(color: Colors.black45),
+                                      style: TextStyle(
+                                          color: Colors.black45,
+                                        fontSize: 0.035 * MediaQuery.of(context).size.height,
+                                      ),
                                       textScaleFactor: 1.5,
                                     ),
                                   )),
@@ -210,7 +227,7 @@ class _SCalci extends State<SCalci> {
                             // x^y
                             Expanded(
                               child: Container(
-                                  height: 35,
+                                  height: 0.1 * MediaQuery.of(context).size.height,
                                   margin: EdgeInsets.all(2.5),
                                   child: ElevatedButton(
                                     style: ButtonStyle(
@@ -220,10 +237,14 @@ class _SCalci extends State<SCalci> {
                                     onPressed: (){
                                       this.inv? addPowers('\u{221a}')
                                           : addPowers('^');
+                                      setState(()=> this.inv = false);
                                     },
                                     child: Text(
                                       this.inv? '\u{221a}':'^',
-                                      style: TextStyle(color: Colors.black45),
+                                      style: TextStyle(
+                                          color: Colors.black45,
+                                        fontSize: 0.035 * MediaQuery.of(context).size.height,
+                                      ),
                                       textScaleFactor: 1.5,
                                     ),
                                   )
@@ -239,7 +260,7 @@ class _SCalci extends State<SCalci> {
                             // )
                             Expanded(
                               child: Container(
-                                  height: 35,
+                                  height: 0.1 * MediaQuery.of(context).size.height,
                                   margin: EdgeInsets.all(2.5),
                                   child: ElevatedButton(
                                     style: ButtonStyle(
@@ -252,7 +273,10 @@ class _SCalci extends State<SCalci> {
                                     },
                                     child: Text(
                                       ')',
-                                      style: TextStyle(color: Colors.black45),
+                                      style: TextStyle(
+                                          color: Colors.black45,
+                                        fontSize: 0.035 * MediaQuery.of(context).size.height,
+                                      ),
                                       textScaleFactor: 1.5,
                                     ),
                                   )),
@@ -311,7 +335,7 @@ class _SCalci extends State<SCalci> {
                             // AC
                             Expanded(
                                 child: Container(
-                                    height: 35,
+                                    height: 0.1 * MediaQuery.of(context).size.height,
                                     margin: EdgeInsets.all(2.5),
                                     child: ElevatedButton(
                                       style: ButtonStyle(
@@ -325,7 +349,10 @@ class _SCalci extends State<SCalci> {
                                       }),
                                       child: Text(
                                         'AC',
-                                        style: TextStyle(color: Colors.black45),
+                                        style: TextStyle(
+                                            color: Colors.deepOrange,
+                                          fontSize: 0.035 * MediaQuery.of(context).size.height,
+                                        ),
                                         textScaleFactor: 1.5,
                                       ),
                                     ))),
@@ -333,7 +360,7 @@ class _SCalci extends State<SCalci> {
                             // CE
                             Expanded(
                                 child: Container(
-                                    height: 35,
+                                    height: 0.1 * MediaQuery.of(context).size.height,
                                     margin: EdgeInsets.all(2.5),
                                     child: ElevatedButton(
                                       style: ButtonStyle(
@@ -347,7 +374,10 @@ class _SCalci extends State<SCalci> {
                                       }),
                                       child: Text(
                                         'C',
-                                        style: TextStyle(color: Colors.black45),
+                                        style: TextStyle(
+                                            color: Colors.deepOrange,
+                                          fontSize: 0.035 * MediaQuery.of(context).size.height,
+                                        ),
                                         textScaleFactor: 1.5,
                                       ),
                                     ))),
@@ -355,7 +385,7 @@ class _SCalci extends State<SCalci> {
                             // BKSP
                             Expanded(
                                 child: Container(
-                                    height: 30,
+                                    height: 0.1 * MediaQuery.of(context).size.height,
                                     margin: EdgeInsets.all(2.5),
                                     child: ElevatedButton(
                                       style: ButtonStyle(
@@ -375,7 +405,10 @@ class _SCalci extends State<SCalci> {
                                       }),
                                       child: Text(
                                         '\u{232b}',
-                                        style: TextStyle(color: Colors.black45),
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                          fontSize: 0.035 * MediaQuery.of(context).size.height,
+                                        ),
                                         textScaleFactor: 1.5,
                                       ),
                                     ))),
@@ -469,7 +502,7 @@ class _SCalci extends State<SCalci> {
                             // =
                             Expanded(
                                 child: Container(
-                                    height: 35,
+                                    height: 0.1 * MediaQuery.of(context).size.height,
                                     margin: EdgeInsets.all(2.5),
                                     child: ElevatedButton(
                                       style: ButtonStyle(
@@ -486,7 +519,10 @@ class _SCalci extends State<SCalci> {
                                       }),
                                       child: Text(
                                         '=',
-                                        style: TextStyle(color: Colors.white),
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                          fontSize: 0.035 * MediaQuery.of(context).size.height,
+                                        ),
                                         textScaleFactor: 1.5,
                                       ),
                                     ))),
@@ -502,7 +538,7 @@ class _SCalci extends State<SCalci> {
 
   Widget numButton(BuildContext context, String num, {int isDisabled = 0}) {
     final button = Container(
-        height: 35,
+        height: 0.1 * MediaQuery.of(context).size.height,
         margin: EdgeInsets.all(2.5),
         child: ElevatedButton(
           style: ButtonStyle(
@@ -512,7 +548,9 @@ class _SCalci extends State<SCalci> {
             num,
             textScaleFactor: 1.5,
             style: TextStyle(
-                color: Colors.black45), // Theme.of(context).primaryColorDark,),
+                color: Colors.black45,
+              fontSize: 0.035 * MediaQuery.of(context).size.height,
+            ), // Theme.of(context).primaryColorDark,),
           ),
           onPressed: isDisabled==1 ? null: () => setState(() {
             if (num != '.' && equation.length == 1 && equation[0] == '0')
@@ -529,7 +567,7 @@ class _SCalci extends State<SCalci> {
 
   Widget opButton(BuildContext context, String op) {
     final button = Container(
-      height: 35,
+      height: 0.1 * MediaQuery.of(context).size.height,
       margin: EdgeInsets.all(2.5),
       child: ElevatedButton(
         style: ButtonStyle(
@@ -544,12 +582,16 @@ class _SCalci extends State<SCalci> {
           textScaleFactor: 1.5,
           style: TextStyle(
             color: Theme.of(context).primaryColor,
+            fontSize: 0.035 * MediaQuery.of(context).size.height,
           ),
         ),
         onPressed: () => setState(() {
-          if (op=='Ans')  equation.removeLast();
+          if (op=='Ans' && equation.last== '0')  equation.removeLast();
+          else if(op=='Ans' && isNumeric(equation.last))
+            equation.add('\u00d7');
           equation.add(op);
           expr.text = equation.join(' ');
+          this.inv = false;
         }),
       ),
     );
@@ -560,7 +602,7 @@ class _SCalci extends State<SCalci> {
     fn = hyp? fn+'h':fn;
     fn = inv? fn+"\u207B\u00b9":fn;
     final button = Container(
-        height: 35,
+        height: 0.1 * MediaQuery.of(context).size.height,
         margin: EdgeInsets.all(2.5),
         child: ElevatedButton(
           style: ButtonStyle(
@@ -569,9 +611,12 @@ class _SCalci extends State<SCalci> {
           child: Text(fn,
             textScaleFactor: 1.5,
             style: TextStyle(
-                color: Colors.black45), // Theme.of(context).primaryColorDark,),
+                color: Colors.black45,
+              fontSize: 0.035 * MediaQuery.of(context).size.height,
+            ), // Theme.of(context).primaryColorDark,),
           ),
           onPressed: () => setState(() => addTrig(fn)),
+          onLongPress: ()=> _showHelp(context, fn),
         ));
     return button;
   }
@@ -585,12 +630,13 @@ class _SCalci extends State<SCalci> {
     equation.add(fn);
     equation.add('(');
     expr.text = equation.join(' ');
+    this.inv = false;
   }
 
   Widget logButton(BuildContext context, String fn, base) {
     fn = inv? 'anti'+fn+toSubscript(base): fn+toSubscript(base);
     final button = Container(
-        height: 35,
+        height: 0.1 * MediaQuery.of(context).size.height,
         margin: EdgeInsets.all(2.5),
         child: ElevatedButton(
           style: ButtonStyle(
@@ -600,7 +646,9 @@ class _SCalci extends State<SCalci> {
             fn,
             textScaleFactor: 1.5,
             style: TextStyle(
-                color: Colors.black45), // Theme.of(context).primaryColorDark,),
+                color: Colors.black45,
+              fontSize: 0.035 * MediaQuery.of(context).size.height,
+            ), // Theme.of(context).primaryColorDark,),
           ),
           onPressed: () => setState(() => addLog(fn)),
         ));
@@ -616,7 +664,7 @@ class _SCalci extends State<SCalci> {
     equation.add(fn);
     equation.add('(');
     expr.text = equation.join(' ');
-    return 0;
+    this.inv = false;
   }
 
   addPowers(op){
@@ -649,12 +697,13 @@ class _SCalci extends State<SCalci> {
 // radical: \u{221a}
 
 
-// Widget bookFlight(BuildContext context) {
-//     var alertDialog = AlertDialog(
-//       title: Text("Booking confirmation"),
-//       content: Text("Your Flight booking was successful"),
-//     );
-//     showDialog(
-//         context: context, builder: (BuildContext context) => alertDialog);
-//     return null;
-//   }
+Future<void> _showHelp(BuildContext context, String label) async {
+    var alertDialog = AlertDialog(
+      title: Text("Long Pressed $label"),
+      content: Text("Help for $label"),
+    );
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => alertDialog
+    );
+  }
