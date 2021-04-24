@@ -27,11 +27,12 @@ class SecondScreen extends StatelessWidget {
       home: ScientificCalculator(),
       theme: ThemeData(
         primaryColor: Colors.blueGrey,
-        accentColor: Colors.blueAccent,
-        primaryColorDark: Colors.grey[800],
-        primaryColorBrightness: Brightness.dark,
+        accentColor: Colors.white,
+        primaryColorDark: Colors.grey[400],
+        // primaryColorBrightness: Brightness.dark,
+        // accentColorBrightness: Brightness.dark,
         // brightness: Brightness.dark,
-        backgroundColor: Colors.indigo,
+        backgroundColor: Colors.white,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
     );
@@ -104,11 +105,23 @@ class _ScientificCalculator extends State<ScientificCalculator>{
           )
       );
     }
-
+    
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       // resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-        title: Text(this.scaffoldTitle),
+        title: Text(
+          this.scaffoldTitle,
+          style: TextStyle(
+            fontSize:
+            MediaQuery.of(context).orientation == Orientation.landscape?
+            0.05 * MediaQuery.of(context).size.height:
+            0.0255 * MediaQuery.of(context).size.height,
+          ),
+        ),
+        toolbarHeight: MediaQuery.of(context).orientation == Orientation.landscape?
+        0.14* MediaQuery.of(context).size.height:
+        0.075 * MediaQuery.of(context).size.height,
       ),
       drawer: Drawer(
         child: ListView(
@@ -120,11 +133,7 @@ class _ScientificCalculator extends State<ScientificCalculator>{
           ],
         ),
       ),
-      body: Padding(
-          padding: EdgeInsets.zero,
-          child: Center(
-              child: _getDrawerItemWidget(_selectedDrawerIndex)
-          )),
+      body: _getDrawerItemWidget(_selectedDrawerIndex),
     );
   }
 }
