@@ -4,7 +4,7 @@ Android, iOS and Desktop Calculator.
 
 ## Simple Calculator
 
-Calculator containing basic arithmetic functionalities (+, -, *, /).
+Calculator containing basic arithmetic functionalities (+, -, *, /, ^, !).
 
 ![Simple Calculator](Screenshots/Simple_Calculator.jpg "Simple Calculator")
 
@@ -31,9 +31,20 @@ Basic Simple Interest and Compound Interest calculator
 ![Interest Calculator](Screenshots/Interest_Calculator.jpg "Interest Calculator")
 
 ## Unit Coverter
+Conversion of following Physical quatities:
+1. Mass
+2. Length
+3. Temperature
+4. Volume
+5. Force
+6. Pressure
+7. Velocity
 
 ![Unit Converter](Screenshots/Unit_Converter.jpg "Unit Converter")
 
 ## App Drawer
 
 ![App Drawer](Screenshots/App_Drawer.jpg "App_Drawer")
+
+_Note:_
+Values greater than 1E+15 are rounded off to 2^63. This issue will be addressed in the future.
