@@ -24,6 +24,9 @@ Calculator with:
 
 ![Scientific Calculator](Screenshots/Scientific_Calculator.jpg "Scientific Calculator")
 
+_**Note:**_
+Values greater than 1E+15 are rounded off to 2^63. This issue will be addressed in the future.
+
 ## Interest Calculator
 
 Basic Simple Interest and Compound Interest calculator
@@ -45,6 +48,3 @@ Conversion of following Physical quatities:
 ## App Drawer
 
 ![App Drawer](Screenshots/App_Drawer.jpg "App_Drawer")
-
-_Note:_
-Values greater than 1E+15 are rounded off to 2^63. This issue will be addressed in the future.
