@@ -13,6 +13,7 @@ class UnitConverter extends StatefulWidget {
 
 class _UnitConverter extends State<UnitConverter> {
   int currConverter = 0;
+  double res = 0.0;
 
   // Converters name
   List<String> converters = [
@@ -21,7 +22,8 @@ class _UnitConverter extends State<UnitConverter> {
     'Temperature',
     'Volume',
     'Force',
-    'Pressure'
+    'Pressure',
+    'Velocity'
   ];
 
   //Functions for converters
@@ -32,6 +34,7 @@ class _UnitConverter extends State<UnitConverter> {
     'Volume': volumeConverter,
     'Force': forceConverter,
     'Pressure': pressureConverter,
+    'Velocity': velocityConverter,
   };
 
   //Units
@@ -42,6 +45,7 @@ class _UnitConverter extends State<UnitConverter> {
     'Volume': volume.keys.toList(),
     'Force': force.keys.toList(),
     'Pressure': pressure.keys.toList(),
+    'Velocity': velocity.keys.toList(),
   };
 
   var _fromUnit = '', _toUnit = '';
@@ -305,7 +309,8 @@ class _UnitConverter extends State<UnitConverter> {
                       child: TextButton(
                         style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.resolveWith(
-                                (states) => Theme.of(context).accentColor)),
+                                (states) =>
+                                    Theme.of(context).colorScheme.secondary)),
                         onPressed: () => setState(() {
                           eqn = ['0'];
                           expr.text = eqn.join(' ');
@@ -336,7 +341,8 @@ class _UnitConverter extends State<UnitConverter> {
                       child: TextButton(
                         style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.resolveWith(
-                                (states) => Theme.of(context).accentColor)),
+                                (states) =>
+                                    Theme.of(context).colorScheme.secondary)),
                         onPressed: () => setState(() {
                           try {
                             if (eqn.last.length == 1)
@@ -390,18 +396,23 @@ class _UnitConverter extends State<UnitConverter> {
                           size: 0.11 * MediaQuery.of(context).size.width,
                         ),
                         onPressed: () => setState(() {
-                          if (_isSelected1)
-                            result.text = converterFunctions[converter.text]!(
-                                    toDouble(expr.text),
-                                    this._fromUnit,
-                                    this._toUnit)
-                                .toString();
+                          if (_isSelected1) {
+                            res = converterFunctions[converter.text]!(
+                                toDouble(expr.text),
+                                this._fromUnit,
+                                this._toUnit);
+                            result.text = res < toDouble("1E10") ? res
+                                .toString() : res.toStringAsExponential();
+                          }
                           else
-                            result.text = converterFunctions[converter.text]!(
+                            res = converterFunctions[converter.text]!(
                                     toDouble(expr.text),
                                     this._toUnit,
                                     this._fromUnit)
-                                .toString();
+                                ;
+                          result.text = res < toDouble("1E10") ? res
+                              .toString() : res.toStringAsExponential();
+
                         }),
                       ))),
             ],
@@ -418,7 +429,7 @@ class _UnitConverter extends State<UnitConverter> {
         child: TextButton(
           style: ButtonStyle(
               backgroundColor: MaterialStateProperty.resolveWith(
-                  (states) => Theme.of(context).accentColor)),
+                  (states) => Theme.of(context).colorScheme.secondary)),
           child: Text(
             num,
             textScaleFactor: 1.5,
