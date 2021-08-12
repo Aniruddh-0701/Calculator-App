@@ -23,7 +23,6 @@ class _SiForm extends State<SiForm> {
   var _toi = ['CI', 'SI'];
   var _defInt = 'CI';
   var _defCurr = '';
-  var _op = ['', ''];
 
   var _formKey = GlobalKey<FormState>();
   final _minMargin = 10.0;
@@ -38,6 +37,9 @@ class _SiForm extends State<SiForm> {
   TextEditingController _principal = TextEditingController();
   TextEditingController _rate = TextEditingController();
   TextEditingController _time = TextEditingController();
+  TextEditingController _parts = TextEditingController();
+  TextEditingController _amt = TextEditingController();
+  TextEditingController _int = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +54,45 @@ class _SiForm extends State<SiForm> {
           child: ListView(
             children: <Widget>[
               siImage(),
+
+              Padding(
+                padding: EdgeInsets.all(_minMargin),
+                child: Row(
+                  children: [
+                    Container(
+                        width: 0.3 * MediaQuery.of(context).size.width,
+                        child: DropdownButton<String>(
+                          // style: textStyle,
+                          items: _currency.map((String curr) {
+                            return DropdownMenuItem<String>(
+                              value: curr,
+                              child: Text(curr),
+                            );
+                          }).toList(),
+                          value: _defCurr,
+                          onChanged: (var oCurr) {
+                            onSelect(oCurr.toString());
+                          },
+                        )),
+                    Container(
+                      width: _minMargin,
+                    ),
+                    Container(
+                        width: 0.3 * MediaQuery.of(context).size.width,
+                        child: DropdownButton<String>(
+                      // style: textStyle,
+                      items: _toi.map((String inT) {
+                        return DropdownMenuItem<String>(
+                          value: inT,
+                          child: Text(inT),
+                        );
+                      }).toList(),
+                      value: _defInt,
+                      onChanged: (var oInt) => onSelectInt(oInt.toString()),
+                    )),
+                  ],
+                ),
+              ),
               Padding(
                 padding: EdgeInsets.all(_minMargin),
                 child: TextFormField(
@@ -116,33 +157,20 @@ class _SiForm extends State<SiForm> {
                         width: _minMargin,
                       ),
                       Expanded(
-                          child: DropdownButton<String>(
-                        // style: textStyle,
-                        items: _currency.map((String curr) {
-                          return DropdownMenuItem<String>(
-                            value: curr,
-                            child: Text(curr),
-                          );
-                        }).toList(),
-                        value: _defCurr,
-                        onChanged: (var oCurr) {
-                          onSelect(oCurr.toString());
-                        },
-                      )),
-                      Container(
-                        width: _minMargin,
-                      ),
-                      (DropdownButton<String>(
-                        // style: textStyle,
-                        items: _toi.map((String inT) {
-                          return DropdownMenuItem<String>(
-                            value: inT,
-                            child: Text(inT),
-                          );
-                        }).toList(),
-                        value: _defInt,
-                        onChanged: (var oInt) => onSelectInt(oInt.toString()),
-                      )),
+                          child: TextFormField(
+                            // style: textStyle,
+                            keyboardType: TextInputType.number,
+                            controller: _parts,
+                            decoration: InputDecoration(
+                              labelText: "Parts/yr",
+                              hintText: "Parts",
+                              labelStyle: textStyle,
+                              errorStyle: TextStyle(fontSize: 15.0),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
+                            ),
+                          )),
                     ],
                   )),
               Padding(
@@ -151,10 +179,10 @@ class _SiForm extends State<SiForm> {
                   children: <Widget>[
                     Expanded(
                         child: ElevatedButton(
-                      style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.resolveWith(
+                            style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.resolveWith(
                               (states) => Theme.of(context).primaryColor)),
-                      child: Text(
+                            child: Text(
                         "Calculate",
                         textScaleFactor: 1.5,
                         style: TextStyle(
@@ -162,12 +190,11 @@ class _SiForm extends State<SiForm> {
                       ),
                       onPressed: () => setState(() {
                         if (_formKey.currentState!.validate()) {
-                          var interest = calculateInterest();
-                          this._op = [
-                            'Interest = '
-                                '${_defCurr[_defCurr.length - 1]} ${interest[0]}',
-                            'Amount = ${_defCurr[_defCurr.length - 1]} ${interest[1]}'
-                          ];
+                          print('Calculating');
+                          var op = calculateInterest();
+                          print(op);
+                          _int.text = op.first.toString();
+                          _amt.text = op.last.toString();
                         }
                       }),
                     )),
@@ -190,29 +217,61 @@ class _SiForm extends State<SiForm> {
                 ),
               ),
               Padding(
-                  padding: EdgeInsets.all(_minMargin * 2),
-                  child: Center(
-                    child: Text(
-                      _op.join('\n'),
-                      style: textStyle,
-                    ),
-                  )),
+                  padding: EdgeInsets.all(_minMargin),
+                  child: Row(
+                    children: [
+                      Container(
+                          width: 0.4 * MediaQuery.of(context).size.width,
+                          child: TextFormField(
+                            readOnly: true,
+                            controller: _int,
+                            decoration: InputDecoration(
+                              labelText: "Interest",
+                              labelStyle: textStyle,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
+                            ),
+                          )
+                      ),
+
+                      Expanded(child: Container(
+                        width: 0.25 * MediaQuery.of(context).size.width,
+                      )),
+
+                      Container(
+                          width: 0.4 * MediaQuery.of(context).size.width,
+                          child: TextFormField(
+                            readOnly: true,
+                            controller: _amt,
+                            decoration: InputDecoration(
+                              labelText: "Amount",
+                              labelStyle: textStyle,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
+                            ),
+                          )
+                      )
+                    ],
+                  ),
+              ),
             ],
           ),
         ));
   }
 
   Widget siImage() {
-    AssetImage assetImage = AssetImage('images/SI_image.png');
+    AssetImage assetImage = AssetImage('images/SI_image.jpg');
     Image image = Image(
       image: assetImage,
-      width: 440.5,
-      height: 228.0,
+      width: 160,
+      height: 120.0,
     );
     return Container(
-        margin: EdgeInsets.all(_minMargin),
-        child: Center(
-          child: image,
+          margin: EdgeInsets.all(_minMargin),
+          child: Center(
+            child: image,
         ));
   }
 
@@ -228,18 +287,19 @@ class _SiForm extends State<SiForm> {
     });
   }
 
-  List calculateInterest() {
+  List<num> calculateInterest() {
     double P = double.parse(_principal.text);
     double R = double.parse(_rate.text);
     double T = double.parse(_time.text);
+    double n = double.parse( _parts.text!=''? _parts.text:'1');
     if (this._defInt == 'SI') {
-      double sI = P * R * T / 100;
+      double sI = P * R * n* T / 100;
       double total = sI + P;
-      return [sI, total];
+      return [roundOff(sI, 7)!, roundOff(total, 7)!];
     } else {
-      double cI = P * pow(R / 100, T);
-      double total = cI + P;
-      return [cI, total];
+      double total = P * pow(1 + (R / 100), n * T);
+      double cI = total - P;
+      return [roundOff(cI, 7)!, roundOff(total, 7)!];
     }
   }
 
@@ -247,7 +307,9 @@ class _SiForm extends State<SiForm> {
     _principal.text = '';
     _rate.text = '';
     _time.text = '';
-    _op = [''];
+    _parts.text = '';
+    _amt.text = '';
+    _int.text = '';
     _defCurr = _currency[0];
     _defInt = _toi[0];
   }
