@@ -14,9 +14,9 @@ class DrawerItem {
   DrawerItem(this.title, this.icon);
 }
 
-
 class SecondScreen extends StatelessWidget {
   // This widget is the root of your application.
+  final ThemeData theme = ThemeData();
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations(
@@ -27,10 +27,9 @@ class SecondScreen extends StatelessWidget {
       home: ScientificCalculator(),
       theme: ThemeData(
         primaryColor: Colors.blueGrey,
-        accentColor: Colors.white,
+        colorScheme: theme.colorScheme.copyWith(secondary: Colors.white),
         primaryColorDark: Colors.grey[400],
         // primaryColorBrightness: Brightness.dark,
-        // accentColorBrightness: Brightness.dark,
         // brightness: Brightness.dark,
         backgroundColor: Colors.white,
         visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -39,7 +38,7 @@ class SecondScreen extends StatelessWidget {
   }
 }
 
-class ScientificCalculator extends StatefulWidget{
+class ScientificCalculator extends StatefulWidget {
   final drawerItems = [
     new DrawerItem("Simple Calculator", Icons.calculate),
     new DrawerItem("Scientific Calculator", Icons.calculate_outlined),
@@ -54,8 +53,7 @@ class ScientificCalculator extends StatefulWidget{
   }
 }
 
-class _ScientificCalculator extends State<ScientificCalculator>{
-
+class _ScientificCalculator extends State<ScientificCalculator> {
   int _selectedDrawerIndex = 0;
   String scaffoldTitle = 'Calculator';
   final drawerItems = [
@@ -96,16 +94,14 @@ class _ScientificCalculator extends State<ScientificCalculator>{
     var drawerOptions = <Widget>[];
     for (var i = 0; i < widget.drawerItems.length; i++) {
       var d = widget.drawerItems[i];
-      drawerOptions.add(
-          new ListTile(
-            leading: new Icon(d.icon),
-            title: new Text(d.title),
-            selected: i == _selectedDrawerIndex,
-            onTap: () => _onSelectItem(i),
-          )
-      );
+      drawerOptions.add(new ListTile(
+        leading: new Icon(d.icon),
+        title: new Text(d.title),
+        selected: i == _selectedDrawerIndex,
+        onTap: () => _onSelectItem(i),
+      ));
     }
-    
+
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       // resizeToAvoidBottomPadding: false,
@@ -114,14 +110,15 @@ class _ScientificCalculator extends State<ScientificCalculator>{
           this.scaffoldTitle,
           style: TextStyle(
             fontSize:
-            MediaQuery.of(context).orientation == Orientation.landscape?
-            0.05 * MediaQuery.of(context).size.height:
-            0.0255 * MediaQuery.of(context).size.height,
+                MediaQuery.of(context).orientation == Orientation.landscape
+                    ? 0.05 * MediaQuery.of(context).size.height
+                    : 0.0255 * MediaQuery.of(context).size.height,
           ),
         ),
-        toolbarHeight: MediaQuery.of(context).orientation == Orientation.landscape?
-        0.14* MediaQuery.of(context).size.height:
-        0.075 * MediaQuery.of(context).size.height,
+        toolbarHeight:
+            MediaQuery.of(context).orientation == Orientation.landscape
+                ? 0.14 * MediaQuery.of(context).size.height
+                : 0.075 * MediaQuery.of(context).size.height,
       ),
       drawer: Drawer(
         child: ListView(
