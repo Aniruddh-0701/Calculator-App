@@ -1,28 +1,33 @@
-// import 'dart:io'; // For testing
+import 'dart:io'; // For testing
 import 'dart:math'; // For built-in mathematical functions
+// stack for operator
+import 'package:calculator_app/back_ends/stack.dart';
 // Other mathematical and logical functions
 import 'package:calculator_app/back_ends/CalculatorFunctions.dart';
 
 class Calculate {
-  List eqn = [];
-  List result = [];
-  List operators = [];
+  List expression = []; // The input expression
+  List result = []; // Result evaluation list
+  Stack<String> operatorStack = Stack(); // operator stack
   double finalVal = 0.0;
   var isRad = 1;
 
-  Map trig = {
+  // trigonometry functions
+  Map trigFunctions = {
     'sin': sin,
     'cos': cos,
     'tan': tan,
   };
 
-  Map invTrig = {
+  // inverse trigonometry
+  Map invTrigFunctions = {
     'sin\u207B\u00b9': asin,
     'cos\u207B\u00b9': acos,
     'tan\u207B\u00b9': atan,
   };
 
-  Map hyp = {
+  // hyperbolic functions
+  Map hypFunctions = {
     'sinh\u207B\u00b9': arcsinh,
     'cosh\u207B\u00b9': arccosh,
     'tanh\u207B\u00b9': arctanh,
@@ -31,110 +36,187 @@ class Calculate {
     'tanh': tanh,
   };
 
+  // Regex to identify functions
   var mathRegEx = 'sin\u207B\u00b9sinh\u207B\u00b9'
       'cos\u207B\u00b9cosh\u207B\u00b9'
       'tan\u207B\u00b9tanh\u207B\u00b9';
 
   // List l = ['^', '/', '*', '%', '+', '-'];
-  List l = ['^', '\u{00f7}', '\u{00d7}', '%', '\u{002b}', '\u{2212}'];
+
+  // operator Identification
+  List arithmeticOperators = [
+    '^',
+    '\u{00f7}',
+    '\u{00d7}',
+    '%',
+    '\u{002b}',
+    '\u{2212}'
+  ];
   // RegExp digits = new RegExp(r"(\d+)");
 
+  // Evaluate expression passed in with respect to brackets
   calculate(List eqn, {int rad = 1}) {
-    this.eqn = ['(', ...eqn, ')'];
+    this.expression = ['(', ...eqn, ')'];
     this.isRad = rad;
     int start = 0, end = 0;
+
+    // Unequal brackets -> Error
     if (eqn.where((e) => e == ')').length != eqn.where((e) => e == '(').length)
       return 'Syntax Error';
-    while (this.eqn.contains(')')) {
-      end = this.eqn.indexOf(')');
+
+    // Split expression with brackets
+    while (this.expression.contains(')')) {
+      end = this.expression.indexOf(')');
+
       for (int j = end; j > -1; --j) {
-        if (this.eqn[j] == '(') {
+        if (this.expression[j] == '(') {
           start = j;
           break;
         }
       }
 
       // print(this.eqn.sublist(start, end + 1));
-      this.genExpression(start + 1, end);
-      this.eqn = [
-        ...this.eqn.sublist(0, start),
-        this.genResult().toString(),
-      ...this.eqn.sublist(end+1, this.eqn.length),
-      ];
 
+      // generating expression identified in the bracket
+      this.genExpression(start + 1, end);
+
+      // Getting result of the expression
+      var r = this.genResult();
+      if ((r >= toDouble('1E10')) || r <= toDouble('1E-6')) {
+        r = r.toStringAsExponential();
+        r = r.replaceAll("e+", "e");
+        // r = r.replaceAll("e-", "e-");
+        // print(r);
+      }
+      else
+        r = r.toString();
+
+      // if (double.parse(r.split('+').last) < 15.0) r = double.parse(r);
+
+      // replacing the expression by result
+      this.expression = [
+        ...this.expression.sublist(0, start),
+        r,
+        ...this.expression.sublist(end + 1, this.expression.length),
+      ];
     }
-    finalVal = toDouble(this.eqn.first);
-    if (finalVal.toInt().toDouble() == finalVal)
-      return finalVal.toInt();
-    else
-      return roundOff(finalVal, 7);
+    // print(this.eqn);
+    finalVal = this.expression.first is double? this.expression.first:
+        toDouble(this.expression.first);
+    // print(finalVal);
+    // return roundOff(finalVal, 7);
+    return this.expression.first;
   }
 
-  genExpression(int start, int end) {
+  // Converting infix expression from UI to postfix expression
+  void genExpression(int start, int end) {
     // print('gen_exp');
     this.result = [];
 
     //iterate through the expression in the innermost parenthesis
-    for (String i in eqn.sublist(start, end)) {
+    for (String i in expression.sublist(start, end)) {
       if (i is double) this.result.add(i);
+
       // if not a double
-      // check if it is a number
+      // check if it is a numerical String
       var d = toDouble(i);
       if (d != double.infinity)
         result.add(d);
-      else if(i == 'Ans') result.add(finalVal);
+
+      // result from previous evaluation
+      else if (i == 'Ans')
+        result.add(finalVal);
+
+      // square root
       else if (i.contains('\u{221a}'))
         this.result.add(i);
-      else if (this.mathRegEx.contains(i)) // trigonometric function
+
+      // trigonometric and hyperbolic function
+      else if (this.mathRegEx.contains(i))
         this.result.add(i);
+
+      // Log functions
       else if (i.contains('log'))
         this.result.add(i);
       else {
-        while (this.operators.length > 0 &&
-            this.l.indexOf(i) > this.l.indexOf(this.operators.last))
-          this.result.add(this.operators.removeLast());
-        this.operators.add(i);
+        // Update the operator stack using operator precedence
+        while (this.operatorStack.isNotEmpty &&
+            this.arithmeticOperators.indexOf(i) >
+                this.arithmeticOperators.indexOf(this.operatorStack.top()))
+          this.result.add(this.operatorStack.pop());
+        this.operatorStack.push(i);
       }
       // print('${this.result}, ${this.operators}');
     }
-    this.result.addAll(this.operators.reversed);
-    this.operators = [];
+
+    // Adding the operators reversed to set the poper order of working
+    while (this.operatorStack.isNotEmpty) {
+      this.result.add(this.operatorStack.pop());
+    }
+
     // return (this.result);
     // print(this.result);
   }
 
+  // Generating result
   genResult() {
     // print('genResult');
     // print(this.result);
+
     var j = 0;
+
     while (this.result.length > 1) {
+      // print(this.result);
+
       var k = this.result[j];
       // print(k);
-      if (k is double) {
+
+      // continue if k is a number
+      if (k is double)
         j += 1;
-      } else if (this.trig.containsKey(k)) {
+
+      // if k is trigonometric
+      else if (this.trigFunctions.containsKey(k)) {
         if (this.isRad == 0) this.result[j + 1] *= pi / 180;
-        this.result[j] = this.trig[k](this.result[j + 1]);
+        this.result[j] = this.trigFunctions[k](this.result[j + 1]);
         this.result.removeAt(j + 1);
-      } else if (this.invTrig.containsKey(k)) {
-        this.result[j] = this.invTrig[k](this.result[j + 1]);
+      }
+
+      // if k is inverse trigonometric
+      else if (this.invTrigFunctions.containsKey(k)) {
+        this.result[j] = this.invTrigFunctions[k](this.result[j + 1]);
         this.result.removeAt(j + 1);
         if (this.isRad == 0) this.result[j] *= 180 / pi;
-      } else if (k.contains('anti')) {
+      }
+
+      // anti-log
+      else if (k.contains('anti')) {
         this.result[j] = antilogarithm(this.result.removeAt(j + 1),
             toDouble(subscriptToText(k.substring(7))));
-      } else if (k.contains('log')) {
+      }
+
+      // logarithm
+      else if (k.contains('log')) {
         this.result[j] = logarithm(this.result.removeAt(j + 1),
             base: toDouble(subscriptToText(k.substring(3))));
-      } else if (this.hyp.containsKey(k)) {
-        this.result[j] = this.hyp[k](this.result[j + 1]);
+      }
+
+      // if hyperbolic
+      else if (this.hypFunctions.containsKey(k)) {
+        this.result[j] = this.hypFunctions[k](this.result[j + 1]);
         this.result.removeAt(j + 1);
-      } else if (k.contains('\u{221a}')) {
+      }
+
+      // containing sqrt
+      else if (k.contains('\u{221a}')) {
         String exponent = k.substring(0, k.length - 1);
         this.result[j] =
             pow(this.result[j + 1], 1 / toDouble(superscriptToText(exponent)));
         this.result.removeAt(j + 1);
-      } else if (this.l.contains(k)) {
+      }
+
+      // general arithmetic operations
+      else if (this.arithmeticOperators.contains(k)) {
         if (k == '\u{002b}')
           this.result[j - 2] += this.result[j - 1];
         else if (k == '\u{2212}')
@@ -162,13 +244,23 @@ class Calculate {
 // Main fn to test the code.
 void main() {
   List eqn = [];
-  print('Enter a equation\n');
-  // eqn = stdin.readLineSync()!.split(' ').toList();
-  // eqn = "11 \u{00f7} 2 \u{00d7} 2 \u{00f7} 11".split(' ').toList();
-  eqn = ['5.5!'];
-  print(eqn);
   var cal = Calculate();
+
+  // eqn = "11 \u{00f7} 2 \u{00d7} 2 \u{00f7} 11".split(' ').toList();
+  // eqn = ['200', '^', '10'];
+
+  print('Enter a equation\n');
+
+  eqn = stdin.readLineSync()!.split(' ').toList();
+
+  print(eqn);
+
   print(cal.calculate(eqn));
+  print(' ');
+  print(pow(10.0, 40.0).toStringAsExponential(7));
+  print(antilogarithm(40 * logarithm(10), 10));
+  print(antilogarithm(100 * logarithm(2), 10));
+
   // print(eqn);
   // var x = '10.';
   // print(isNumeric(x));
