@@ -4,7 +4,7 @@ Android, iOS and Desktop Calculator.
 
 ## Simple Calculator
 
-Calculator containing basic arithmetic functionalities (+, -, *, /, ^, !).
+Calculator containing basic arithmetic functionalities (+, -, \*, /, ^, !).
 
 ![Simple Calculator](Screenshots/Simple_Calculator.jpg "Simple Calculator")
 
@@ -12,7 +12,7 @@ Calculator containing basic arithmetic functionalities (+, -, *, /, ^, !).
 
 Calculator with:
 
-1. arithmetic functionalities (^, +, -, *, /, !) with paranthesis
+1. arithmetic functionalities (^, +, -, \*, /, !) with parenthesis
 
 2. Logarithms and antilogarithms
 
@@ -33,8 +33,10 @@ Basic Simple Interest and Compound Interest calculator
 
 ![Interest Calculator](Screenshots/Interest_Calculator.jpg "Interest Calculator")
 
-## Unit Coverter
-Conversion of following Physical quatities:
+## Unit Converter
+
+Conversion of following Physical quantities:
+
 1. Mass
 2. Length
 3. Temperature
