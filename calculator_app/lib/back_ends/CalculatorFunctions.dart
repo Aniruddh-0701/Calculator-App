@@ -17,51 +17,62 @@ double logarithm(num x, {num base = 10}) => log(x) / log(base);
 
 num antilogarithm(num x, num base) => pow(base, x);
 
-double roundOff(double value, int places) {
-  num mod = pow(10.0, places);
-  return ((value * mod).round().toDouble() / mod);
+num power(num x, num y) => antilogarithm(y * logarithm(x), 10);
+
+roundOff(double value, int places) {
+  num mod = power(10.0, places);
+  final finalVal =
+      toDouble((value * mod).round().toStringAsExponential(7)) / mod;
+  print('$value, $mod, $finalVal');
+  // return BigInt.from(finalVal).toDouble() == finalVal? BigInt.from(finalVal):finalVal;
+  return finalVal;
 }
 
 double toDouble(String x) {
-  if (x.contains('E')) {
-    var notation = x.split('E');
-    if (notation.length == 1) notation.add('1.0');
-    else if(notation.last=='') notation.last='1.0';
-    var exp = notation.map((element) => double.parse(element)).toList();
-    return exp.first * (pow(10, exp.last));
-  } else if (x.contains('e')) {
-    var notation = x.split('e');
-    if (notation.length == 1) notation.add('1.0');
-    else if(notation.last=='') notation.last='1.0';
-    List exp = notation.map((element) => double.parse(element)).toList();
-    if (exp == []) exp = [1.0, 1.0];
-    if (exp.length == 1) exp.add(0.0);
-    return exp.first * (pow(e, exp.last));
-  } else if (x.endsWith('\u{1d70b}')) { // pi
-    List notation;
-    if(x=='\u{1d70b}') notation = ['1'];
-    else notation = x.split('\u{1d70b}');
-    var exp = double.parse(notation[0]);
-    return exp * pi;
-  } else if(x.contains('!')){
-    String number = x.substring(0, x.length-1);
-    num n = toDouble(number);
-    if(n.toInt().toDouble() == n)
-      n = factorial(n.toInt());
-    else
-      n = factorialFromGamma(n.toDouble());
-    return n.toDouble();
-  } else{
-   try{
-     return double.parse(x);
-   }catch(e){
-     return double.infinity;
-   }
+  try {
+    return double.parse(x);
+  } catch (err) {
+    if (x.contains('E')) {
+      var notation = x.split('E');
+      if (notation.length == 1)
+        notation.add('1.0');
+      else if (notation.last == '') notation.last = '1.0';
+      var exp = notation.map((element) => double.parse(element)).toList();
+      return exp.first * (pow(10, exp.last));
+    } else if (x.contains('e')) {
+      var notation = x.split('e');
+      if (notation.length == 1)
+        notation.add('1.0');
+      else if (notation.last == '') notation.last = '1.0';
+      List exp = notation.map((element) => double.parse(element)).toList();
+      if (exp == []) exp = [1.0, 1.0];
+      if (exp.length == 1) exp.add(0.0);
+      return exp.first * (pow(e, exp.last));
+    } else if (x.endsWith('\u{1d70b}')) {
+      // pi
+      List notation;
+      if (x == '\u{1d70b}')
+        notation = ['1'];
+      else
+        notation = x.split('\u{1d70b}');
+      var exp = double.parse(notation[0]);
+      return exp * pi;
+    } else if (x.contains('!')) {
+      String number = x.substring(0, x.length - 1);
+      num n = toDouble(number);
+      if (n.toInt().toDouble() == n)
+        n = factorial(n.toInt());
+      else
+        n = factorialFromGamma(n.toDouble());
+      return n.toDouble();
+    } else {
+      return double.infinity;
+    }
   }
 }
 
 bool isNumeric(String s) {
-  if(toDouble(s)!=double.infinity){
+  if (toDouble(s) != double.infinity) {
     return true;
   }
   return false;
@@ -122,12 +133,18 @@ int factorial(int n) {
 // Work by Gergo Nemes, Hungary, refer..
 // http://www.rskey.org/CMS/index.php/the-library/11
 
-double factorialFromGamma(double x){
-  double factorialVal = pow(e, -x) * sqrt(2*pi*x) * pow((x + 1/(12*x) +
-      1/(1440 * pow(x,3)) + 239/(362880 * pow(x, 5))), x);
-  double error = pow(x, -8)*0.802919;
+double factorialFromGamma(double x) {
+  double factorialVal = pow(e, -x) *
+      sqrt(2 * pi * x) *
+      pow(
+          (x +
+              1 / (12 * x) +
+              1 / (1440 * pow(x, 3)) +
+              239 / (362880 * pow(x, 5))),
+          x);
+  double error = pow(x, -8) * 0.802919;
   // print(error);
-  return factorialVal-error;
+  return factorialVal - error;
 }
 
 void main() {
