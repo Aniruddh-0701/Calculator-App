@@ -311,7 +311,11 @@ class _Calci extends State<Calci> {
                         equation.length == 1 &&
                         equation[0] == '0')
                       equation[0] = num;
-                    else if (isNumeric(equation.last))
+                    else if (isNumeric(equation.last) ||
+                        (equation.last == '\u{2212}' &&
+                            ((equation.length > 1 &&
+                                    !isNumeric(equation[equation.length - 2]) ||
+                                (equation.length == 1)))))
                       equation.last += num;
                     else
                       equation.add(num);
@@ -342,11 +346,20 @@ class _Calci extends State<Calci> {
           ),
         ),
         onPressed: () => setState(() {
+          if (op == '\u{2212}' && equation.last == '0') equation.removeLast();
           if (op == 'Ans' && equation.last == '0')
             equation.removeLast();
           else if (op == 'Ans' && isNumeric(equation.last))
             equation.add('\u00d7');
-          equation.add(op);
+          if (op != "Ans" &&
+              op != '\u{2212}' &&
+              cal.arithmeticPrecedence.keys.contains(equation.last))
+            equation.removeLast();
+          if ((op == "\u{2212}" || op == "\u{002b}") &&
+              (equation.length > 0 && equation.last.endsWith("E")))
+            equation.last += op;
+          else
+            equation.add(op);
           expr.text = equation.join(' ');
         }),
       ),

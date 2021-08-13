@@ -29,6 +29,7 @@ roundOff(double value, int places) {
 }
 
 double toDouble(String x) {
+  x = x.replaceAll("\u{2212}", '-');
   try {
     return double.parse(x);
   } catch (err) {
@@ -36,7 +37,10 @@ double toDouble(String x) {
       var notation = x.split('E');
       if (notation.length == 1)
         notation.add('1.0');
-      else if (notation.last == '') notation.last = '1.0';
+      else if (notation.last == '')
+        notation.last = '1.0';
+      else if (notation.last == '-' || notation.last == '+')
+        notation.last += '1.0';
       var exp = notation.map((element) => double.parse(element)).toList();
       return exp.first * (pow(10, exp.last));
     } else if (x.contains('e')) {
@@ -133,20 +137,30 @@ int factorial(int n) {
 // Work by Gergo Nemes, Hungary, refer..
 // http://www.rskey.org/CMS/index.php/the-library/11
 
+// double factorialFromGamma(double x) {
+//   double factorialVal = pow(e, -x) *
+//       sqrt(2 * pi * x) *
+//       pow(
+//           (x +
+//               1 / (12 * x) +
+//               1 / (1440 * pow(x, 3)) +
+//               239 / (362880 * pow(x, 5))),
+//           x);
+//   double error = pow(x, -8) * 0.802919;
+//   print("error: $error, factorial: $factorialVal");
+//   return factorialVal - error;
+// }
+
 double factorialFromGamma(double x) {
-  double factorialVal = pow(e, -x) *
-      sqrt(2 * pi * x) *
-      pow(
-          (x +
-              1 / (12 * x) +
-              1 / (1440 * pow(x, 3)) +
-              239 / (362880 * pow(x, 5))),
-          x);
-  double error = pow(x, -8) * 0.802919;
-  // print(error);
-  return factorialVal - error;
+  num correction = x < 8 ? 1 / (810 * power(x, 6)) : 0;
+  print("correction: $correction");
+  double factorialVal = toDouble((power(2 * pi / x, 1 / 2) *
+          power(x / e * ((x * sinh(1 / x)) + correction), x))
+      .toString());
+  return factorialVal;
 }
 
 void main() {
-  print(factorialFromGamma(5.5).toDouble());
+  // print(factorialFromGamma(5.5).toDouble());
+  print(factorialFromGamma(3.1415902));
 }
