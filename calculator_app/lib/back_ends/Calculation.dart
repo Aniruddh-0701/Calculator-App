@@ -44,15 +44,14 @@ class Calculate {
   // List l = ['^', '/', '*', '%', '+', '-'];
 
   // operator Identification
-  List arithmeticOperators = [
-    '^',
-    '\u{00f7}',
-    '\u{00d7}',
-    '%',
-    '\u{002b}',
-    '\u{2212}'
-  ];
-  // RegExp digits = new RegExp(r"(\d+)");
+  Map<String, int> arithmeticPrecedence = {
+    '^': 3,
+    '\u{00f7}': 2,
+    '\u{00d7}': 2,
+    '%': 2,
+    '\u{002b}': 1,
+    '\u{2212}': 1
+  };
 
   // Evaluate expression passed in with respect to brackets
   calculate(List eqn, {int rad = 1}) {
@@ -82,16 +81,11 @@ class Calculate {
 
       // Getting result of the expression
       var r = this.genResult();
-      if ((r >= toDouble('1E10')) || r <= toDouble('1E-6')) {
+      if ((r.abs() >= toDouble('1E10')) || r.abs() <= toDouble('1E-6')) {
         r = r.toStringAsExponential();
         r = r.replaceAll("e+", "e");
-        // r = r.replaceAll("e-", "e-");
-        // print(r);
-      }
-      else
+      } else
         r = r.toString();
-
-      // if (double.parse(r.split('+').last) < 15.0) r = double.parse(r);
 
       // replacing the expression by result
       this.expression = [
@@ -101,8 +95,9 @@ class Calculate {
       ];
     }
     // print(this.eqn);
-    finalVal = this.expression.first is double? this.expression.first:
-        toDouble(this.expression.first);
+    finalVal = this.expression.first is double
+        ? this.expression.first
+        : toDouble(this.expression.first);
     // print(finalVal);
     // return roundOff(finalVal, 7);
     return this.expression.first;
@@ -115,6 +110,7 @@ class Calculate {
 
     //iterate through the expression in the innermost parenthesis
     for (String i in expression.sublist(start, end)) {
+      // print(i);
       if (i is double) this.result.add(i);
 
       // if not a double
@@ -141,15 +137,15 @@ class Calculate {
       else {
         // Update the operator stack using operator precedence
         while (this.operatorStack.isNotEmpty &&
-            this.arithmeticOperators.indexOf(i) >
-                this.arithmeticOperators.indexOf(this.operatorStack.top()))
+            this.arithmeticPrecedence[i]! <
+                this.arithmeticPrecedence[this.operatorStack.top()]!)
           this.result.add(this.operatorStack.pop());
         this.operatorStack.push(i);
       }
-      // print('${this.result}, ${this.operators}');
+      // print('${this.result}, ${this.operatorStack.toString()}');
     }
 
-    // Adding the operators reversed to set the poper order of working
+    // Adding the operators reversed to set the proper order of working
     while (this.operatorStack.isNotEmpty) {
       this.result.add(this.operatorStack.pop());
     }
@@ -216,17 +212,20 @@ class Calculate {
       }
 
       // general arithmetic operations
-      else if (this.arithmeticOperators.contains(k)) {
-        if (k == '\u{002b}')
+      else if (this.arithmeticPrecedence.containsKey(k)) {
+        if (k == '\u{002b}') {
           this.result[j - 2] += this.result[j - 1];
-        else if (k == '\u{2212}')
+        } else if (k == '\u{2212}') {
           this.result[j - 2] -= this.result[j - 1];
-        else if (k == '\u{00d7}')
+        } else if (k == '\u{00d7}') {
           this.result[j - 2] *= this.result[j - 1];
-        else if (k == '\u{00f7}')
+        } else if (k == '\u{00f7}') {
           this.result[j - 2] /= this.result[j - 1];
-        else if (this.result[j] == '^') {
-          this.result[j - 2] = pow(this.result[j - 2], this.result[j - 1]);
+        } else if (this.result[j] == '^') {
+          num n = pow(this.result[j - 2], this.result[j - 1]);
+          if (this.result[j - 1] != 0 && (this.result[j - 2] < 0 && n > 0))
+            n *= -1;
+          this.result[j - 2] = n;
         }
         this.result.removeAt(j - 1);
         this.result.removeAt(j - 1);
@@ -235,6 +234,7 @@ class Calculate {
       if (j >= this.result.length) j = 0;
       // print('${this.result[j]}');
     }
+    // print(this.result.first);
     return (this.result.first);
   }
 }
@@ -247,13 +247,13 @@ void main() {
   var cal = Calculate();
 
   // eqn = "11 \u{00f7} 2 \u{00d7} 2 \u{00f7} 11".split(' ').toList();
-  // eqn = ['200', '^', '10'];
+  eqn = ['\u{2212}200', '\u{00d7}', '10'];
 
   print('Enter a equation\n');
 
   eqn = stdin.readLineSync()!.split(' ').toList();
 
-  print(eqn);
+  // print(eqn);
 
   print(cal.calculate(eqn));
   print(' ');
