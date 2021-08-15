@@ -19,13 +19,28 @@ num antilogarithm(num x, num base) => pow(base, x);
 
 num power(num x, num y) => antilogarithm(y * logarithm(x), 10);
 
-roundOff(double value, int places) {
-  num mod = power(10.0, places);
-  final finalVal =
-      toDouble((value * mod).round().toStringAsExponential(7)) / mod;
-  print('$value, $mod, $finalVal');
-  // return BigInt.from(finalVal).toDouble() == finalVal? BigInt.from(finalVal):finalVal;
-  return finalVal;
+String roundOff(double value, int places) {
+  num finalVal;
+  // for num < 10^15
+  if (value < double.parse("1e15")) {
+    // if integer
+    if (value.toInt().toDouble() == value) {
+      finalVal = value.toInt();
+      return finalVal.toString();
+    }
+    // if float
+    else {
+      num mod = pow(10.0, places);
+      finalVal =
+          double.parse((value * mod).round().toStringAsExponential(7)) / mod;
+      if (finalVal.toInt().toDouble() == finalVal)
+        return finalVal.toInt().toString();
+      return finalVal.toString();
+    }
+  }
+  // other general cases
+  else
+    return value.toStringAsExponential(places);
 }
 
 double toDouble(String x) {
@@ -33,27 +48,55 @@ double toDouble(String x) {
   try {
     return double.parse(x);
   } catch (err) {
-    if (x.contains('E')) {
+    // factorial
+    if (x.contains('!')) {
+      if (x == '!') return double.infinity;
+      String number = x.substring(0, x.length - 1);
+      num n = toDouble(number);
+      if (n.toInt().toDouble() == n) if (n > 0)
+        n = factorial(n.toInt());
+      else
+        n = pow(-1, n) * factorial(-n.toInt());
+      else {
+        if (n > 0)
+          n = factorialFromGamma(n.toDouble());
+        else
+          n = -pi / (n * factorialFromGamma(-n.toDouble()) * sin(pi * n));
+      }
+      return n.toDouble();
+    }
+    // presence of E -  1E+1 = 1E1 1E-1 = 0.1
+    else if (x.contains('E')) {
       var notation = x.split('E');
-      if (notation.length == 1)
+      if (notation == [])
+        notation = ['1.0', '1.0'];
+      else if (notation.length == 1)
         notation.add('1.0');
       else if (notation.last == '')
         notation.last = '1.0';
       else if (notation.last == '-' || notation.last == '+')
         notation.last += '1.0';
-      var exp = notation.map((element) => double.parse(element)).toList();
+      var exp = notation.map((element) => toDouble(element)).toList();
       return exp.first * (pow(10, exp.last));
-    } else if (x.contains('e')) {
+    }
+    // presence of e
+    else if (x.contains('e')) {
       var notation = x.split('e');
-      if (notation.length == 1)
+      if (notation == [])
+        notation = ['1.0', '1.0'];
+      else if (notation.length == 1)
         notation.add('1.0');
-      else if (notation.last == '') notation.last = '1.0';
+      else if (notation.last == '')
+        notation.last = '1.0';
+      else if (notation.last == '-' || notation.last == '+')
+        notation.last += '1.0';
       List exp = notation.map((element) => double.parse(element)).toList();
       if (exp == []) exp = [1.0, 1.0];
       if (exp.length == 1) exp.add(0.0);
       return exp.first * (pow(e, exp.last));
-    } else if (x.endsWith('\u{1d70b}')) {
-      // pi
+    }
+    //presence of pi
+    else if (x.endsWith('\u{1d70b}')) {
       List notation;
       if (x == '\u{1d70b}')
         notation = ['1'];
@@ -61,14 +104,6 @@ double toDouble(String x) {
         notation = x.split('\u{1d70b}');
       var exp = double.parse(notation[0]);
       return exp * pi;
-    } else if (x.contains('!')) {
-      String number = x.substring(0, x.length - 1);
-      num n = toDouble(number);
-      if (n.toInt().toDouble() == n)
-        n = factorial(n.toInt());
-      else
-        n = factorialFromGamma(n.toDouble());
-      return n.toDouble();
     } else {
       return double.infinity;
     }
@@ -112,21 +147,21 @@ String toSuperscript(String x) {
 }
 
 String subscriptToText(String x) {
-  List subscript = x.split('');
+  List<String> subscript = x.split('');
   String text = '';
-  for (var i in subscript) text += subscriptMap[i];
+  for (String i in subscript) text += subscriptMap[i]!;
   return text;
 }
 
 String superscriptToText(String x) {
-  List superscript = x.split('');
+  List<String> superscript = x.split('');
   String text = '';
-  for (var i in superscript) text += superscriptMap[i];
+  for (String i in superscript) text += superscriptMap[i]!;
   return text;
 }
 
-int factorial(int n) {
-  List<int> factorialResult = [1];
+double factorial(int n) {
+  List<double> factorialResult = [1.0];
   for (int i = 1; i <= n; i++) {
     factorialResult.add(i * factorialResult[i - 1]);
   }
@@ -137,30 +172,24 @@ int factorial(int n) {
 // Work by Gergo Nemes, Hungary, refer..
 // http://www.rskey.org/CMS/index.php/the-library/11
 
-// double factorialFromGamma(double x) {
-//   double factorialVal = pow(e, -x) *
-//       sqrt(2 * pi * x) *
-//       pow(
-//           (x +
-//               1 / (12 * x) +
-//               1 / (1440 * pow(x, 3)) +
-//               239 / (362880 * pow(x, 5))),
-//           x);
-//   double error = pow(x, -8) * 0.802919;
-//   print("error: $error, factorial: $factorialVal");
-//   return factorialVal - error;
-// }
-
-double factorialFromGamma(double x) {
-  num correction = x < 8 ? 1 / (810 * power(x, 6)) : 0;
-  print("correction: $correction");
-  double factorialVal = toDouble((power(2 * pi / x, 1 / 2) *
-          power(x / e * ((x * sinh(1 / x)) + correction), x))
-      .toString());
-  return factorialVal;
+double factorialFromGamma(double a, {double x = 50}) {
+  int n = 0;
+  double coefficient = pow(x, a) * exp(-x);
+  num expr = 1;
+  double prev = a != 0 ? a : 1, curr = 0;
+  while (prev != curr) {
+    prev = curr;
+    expr = pow(x, n);
+    for (int i = 0; i <= n; ++i) {
+      expr /= (a + i);
+    }
+    curr += expr;
+    ++n;
+  }
+  return curr * coefficient;
 }
 
 void main() {
   // print(factorialFromGamma(5.5).toDouble());
-  print(factorialFromGamma(3.1415902));
+  print(factorialFromGamma(3.1415902, x: 30.0));
 }
