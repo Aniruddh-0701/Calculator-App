@@ -59,9 +59,11 @@ class Calculate {
     this.isRad = rad;
     int start = 0, end = 0;
 
+    // print(this.expression);
+
     // Unequal brackets -> Error
     if (eqn.where((e) => e == ')').length != eqn.where((e) => e == '(').length)
-      return 'Syntax Error';
+      throw new Exception("Syntax Error");
 
     // Split expression with brackets
     while (this.expression.contains(')')) {
@@ -74,16 +76,21 @@ class Calculate {
         }
       }
 
-      // print(this.eqn.sublist(start, end + 1));
+      // print("$start, $end");
+
+      // print(this.expression.sublist(start, end + 1));
 
       // generating expression identified in the bracket
       this.genExpression(start + 1, end);
 
       // Getting result of the expression
       var r = this.genResult();
-      if ((r.abs() >= toDouble('1E10')) || r.abs() <= toDouble('1E-6')) {
+      r = r is String ? toDouble(r) : r;
+      if ((r.abs() >= toDouble('1E10')) ||
+          (r.abs() <= toDouble('1E-6') && r != 0)) {
         r = r.toStringAsExponential();
-        r = r.replaceAll("e+", "e");
+        r = r.replaceAll("e+", "E");
+        r = r.replaceAll("e", "E");
       } else
         r = r.toString();
 
@@ -94,13 +101,13 @@ class Calculate {
         ...this.expression.sublist(end + 1, this.expression.length),
       ];
     }
-    // print(this.eqn);
+    // print(this.expression);
     finalVal = this.expression.first is double
         ? this.expression.first
         : toDouble(this.expression.first);
     // print(finalVal);
     // return roundOff(finalVal, 7);
-    return this.expression.first;
+    return roundOff(toDouble(this.expression.first), 7);
   }
 
   // Converting infix expression from UI to postfix expression
@@ -121,7 +128,11 @@ class Calculate {
 
       // result from previous evaluation
       else if (i == 'Ans')
-        result.add(finalVal);
+        this.result.add(finalVal);
+
+      //factorial
+      else if (i == '!')
+        this.result.add(i);
 
       // square root
       else if (i.contains('\u{221a}'))
@@ -170,6 +181,14 @@ class Calculate {
       // continue if k is a number
       if (k is double)
         j += 1;
+
+      // if k is ! (factorial)
+      else if (k == '!') {
+        this.result[j - 1] =
+            toDouble(toDouble(this.result[j - 1].toString()).toString() + '!');
+        this.result.removeAt(j);
+        --j;
+      }
 
       // if k is trigonometric
       else if (this.trigFunctions.containsKey(k)) {
@@ -253,7 +272,7 @@ void main() {
 
   eqn = stdin.readLineSync()!.split(' ').toList();
 
-  // print(eqn);
+  print(eqn);
 
   print(cal.calculate(eqn));
   print(' ');

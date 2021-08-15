@@ -2,14 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class Settings extends StatefulWidget{
+class Settings extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return _AppSettings();
   }
 }
 
-class _AppSettings extends State<Settings>{
+class _AppSettings extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations(
@@ -19,10 +19,11 @@ class _AppSettings extends State<Settings>{
       child: Column(
         children: [
           constructImage(),
-          Text('This section is under construction.'
-              '\nPlease wait for us to work\n'
-            , textAlign: TextAlign.center,),
-          Text('\u{1f602}', style: TextStyle(fontSize: 40.0),)
+          Text(
+            'This section is under construction.'
+            '\nPlease wait for us to work\n',
+            textAlign: TextAlign.center,
+          )
         ],
       ),
     );

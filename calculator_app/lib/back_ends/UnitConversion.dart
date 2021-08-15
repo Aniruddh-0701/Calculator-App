@@ -63,10 +63,10 @@ Map<String, double> pressure = {
 
 Map<String, double> velocity = {
   'm/s': 1.0,
-  'km/h': 5/18,
+  'km/h': 5 / 18,
   'mph': 0.44704,
   'ft/s': 0.3048,
-  'mpm': 1/60,
+  'mpm': 1 / 60,
   'in/s': 0.0254,
   'knot': 0.514444,
   'sf/m': 0.00508,
@@ -76,25 +76,25 @@ Map<String, double> velocity = {
 List<String> temperatureUnits = ['K', '\u00b0C', '\u00b0F', '\u00b0R'];
 
 //length converter
-num lengthConverter(double val, String fromUnit, String toUnit) {
+String lengthConverter(double val, String fromUnit, String toUnit) {
   double res = val * length[fromUnit]! / length[toUnit]!;
-  return res < toDouble('1E10')? roundOff(res, 7): res;
+  return roundOff(res, 7);
 }
 
 //mass converter
-num massConverter(double val, String fromUnit, String toUnit) {
+String massConverter(double val, String fromUnit, String toUnit) {
   double res = val * mass[fromUnit]! / mass[toUnit]!;
-  return res < toDouble('1E10')? roundOff(res, 7): res;
+  return roundOff(res, 7);
 }
 
 //volume converter
-num volumeConverter(double val, String fromUnit, String toUnit) {
+String volumeConverter(double val, String fromUnit, String toUnit) {
   double res = val * volume[fromUnit]! / volume[toUnit]!;
-  return res < toDouble('1E10')? roundOff(res, 7): res;
+  return roundOff(res, 7);
 }
 
 //temperature converter
-num temperatureConverter(double val, String fromUnit, String toUnit) {
+String temperatureConverter(double val, String fromUnit, String toUnit) {
   double temperature = val;
   switch (fromUnit) {
     case 'K':
@@ -126,24 +126,24 @@ num temperatureConverter(double val, String fromUnit, String toUnit) {
 }
 
 //force converter
-num forceConverter(double val, String fromUnit, String toUnit) {
+String forceConverter(double val, String fromUnit, String toUnit) {
   double res = val * force[fromUnit]! / force[toUnit]!;
-  return res < toDouble('1E10')? roundOff(res, 7): res;
+  return roundOff(res, 7);
 }
 
 //pressure converter
-num pressureConverter(double val, String fromUnit, String toUnit) {
+String pressureConverter(double val, String fromUnit, String toUnit) {
   double res = val * pressure[fromUnit]! / pressure[toUnit]!;
-  return res < toDouble('1E10')? roundOff(res, 7): res;
+  return roundOff(res, 7);
 }
 
-num velocityConverter(double val, String fromUnit, String toUnit){
+String velocityConverter(double val, String fromUnit, String toUnit) {
   double res = val * velocity[fromUnit]! / velocity[toUnit]!;
-  return res < toDouble('1E10')? roundOff(res, 7): res;
+  return roundOff(res, 7);
 }
 
 void main() {
-  num vol = volumeConverter(1, 'm\u00b3', 'l');
+  String vol = volumeConverter(1, 'm\u00b3', 'l');
   print(vol);
   print(length.keys.toList());
 }

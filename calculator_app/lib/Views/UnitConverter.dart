@@ -13,7 +13,7 @@ class UnitConverter extends StatefulWidget {
 
 class _UnitConverter extends State<UnitConverter> {
   int currConverter = 0;
-  double res = 0.0;
+  String res = "";
 
   // Converters name
   List<String> converters = [
@@ -401,18 +401,13 @@ class _UnitConverter extends State<UnitConverter> {
                                 toDouble(expr.text),
                                 this._fromUnit,
                                 this._toUnit);
-                            result.text = res < toDouble("1E10") ? res
-                                .toString() : res.toStringAsExponential();
-                          }
-                          else
+                            result.text = res;
+                          } else
                             res = converterFunctions[converter.text]!(
-                                    toDouble(expr.text),
-                                    this._toUnit,
-                                    this._fromUnit)
-                                ;
-                          result.text = res < toDouble("1E10") ? res
-                              .toString() : res.toStringAsExponential();
-
+                                toDouble(expr.text),
+                                this._toUnit,
+                                this._fromUnit);
+                          result.text = res;
                         }),
                       ))),
             ],

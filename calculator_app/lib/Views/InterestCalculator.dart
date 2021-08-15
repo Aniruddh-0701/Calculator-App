@@ -287,7 +287,7 @@ class _SiForm extends State<SiForm> {
     });
   }
 
-  List<num> calculateInterest() {
+  List<String> calculateInterest() {
     double P = double.parse(_principal.text);
     double R = double.parse(_rate.text);
     double T = double.parse(_time.text);
@@ -295,11 +295,11 @@ class _SiForm extends State<SiForm> {
     if (this._defInt == 'SI') {
       double sI = P * R * n* T / 100;
       double total = sI + P;
-      return [roundOff(sI, 7)!, roundOff(total, 7)!];
+      return [roundOff(sI, 7), roundOff(total, 7)];
     } else {
       double total = P * pow(1 + (R / 100), n * T);
       double cI = total - P;
-      return [roundOff(cI, 7)!, roundOff(total, 7)!];
+      return [roundOff(cI, 7), roundOff(total, 7)];
     }
   }
 

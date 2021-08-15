@@ -198,7 +198,38 @@ class _Calci extends State<Calci> {
               ),
 
               // factorial
-              Expanded(child: numButton(context, '!')),
+              Expanded(
+                child: Container(
+                    height: 0.1 * MediaQuery.of(context).size.height,
+                    margin: EdgeInsets.all(2.5),
+                    child: TextButton(
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.resolveWith(
+                              (states) => Colors.white)),
+                      onPressed: () {
+                        if (equation.last == ')')
+                          equation.add('!');
+                        else if ((cal.arithmeticPrecedence
+                                .containsKey(equation.last)) ||
+                            (equation.last
+                                    .toString()[equation.last.length - 1] ==
+                                '('))
+                          showWarning('Factorial',
+                              "Factorial can be applied to numbers only");
+                        else
+                          equation.last += '!';
+                        expr.text = equation.join(' ');
+                      },
+                      child: Text(
+                        '!',
+                        style: TextStyle(
+                          color: Colors.black45,
+                          fontSize: 0.02 * MediaQuery.of(context).size.height,
+                        ),
+                        textScaleFactor: 1.5,
+                      ),
+                    )),
+              ),
 
               // pi
               Expanded(child: numButton(context, '\u{1d70b}')),
@@ -265,14 +296,15 @@ class _Calci extends State<Calci> {
                   ),
                   margin: EdgeInsets.all(2.5),
                   child: TextButton(
-                    // style: ButtonStyle(
-                    //     backgroundColor:
-                    //     MaterialStateProperty.resolveWith(
-                    //             (states) => Theme.of(context)
-                    //             .primaryColor)),
                     onPressed: () => setState(() {
-                      expr.text = cal.calculate(equation).toString();
-                      equation = ['0'];
+                      try {
+                        expr.text = cal.calculate(equation);
+                        equation = ['0'];
+                      } catch (e, stackTrace) {
+                        showWarning(
+                            "Error", e.toString().replaceFirst("\n", ""));
+                        print("$e\n $stackTrace");
+                      }
                     }),
                     child: Text(
                       '=',
@@ -378,8 +410,30 @@ class _Calci extends State<Calci> {
         equation[0] = num;
       else if (!isNumeric(equation.last)) equation.add(num);
       equation.last = toSuperscript(equation.last) + '\u{221a}';
-      equation.add('(');
     }
     expr.text = equation.join(' ');
+  }
+
+  Future<void> showWarning(String title, String content) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: Text(content),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

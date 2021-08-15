@@ -27,7 +27,7 @@ class SecondScreen extends StatelessWidget {
       home: ScientificCalculator(),
       theme: ThemeData(
         primaryColor: Colors.blueGrey,
-        colorScheme: theme.colorScheme.copyWith(secondary: Colors.white),
+        colorScheme: theme.colorScheme.copyWith(primary: Colors.blueGrey,secondary: Colors.white),
         primaryColorDark: Colors.grey[400],
         // primaryColorBrightness: Brightness.dark,
         // brightness: Brightness.dark,
