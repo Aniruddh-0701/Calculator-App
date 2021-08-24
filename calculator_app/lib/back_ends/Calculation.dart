@@ -148,7 +148,7 @@ class Calculate {
       else {
         // Update the operator stack using operator precedence
         while (this.operatorStack.isNotEmpty &&
-            this.arithmeticPrecedence[i]! <
+            this.arithmeticPrecedence[i]! <=
                 this.arithmeticPrecedence[this.operatorStack.top()]!)
           this.result.add(this.operatorStack.pop());
         this.operatorStack.push(i);
@@ -266,7 +266,8 @@ void main() {
   var cal = Calculate();
 
   // eqn = "11 \u{00f7} 2 \u{00d7} 2 \u{00f7} 11".split(' ').toList();
-  eqn = ['\u{2212}200', '\u{00d7}', '10'];
+  // eqn = ['\u{2212}200', '\u{00d7}', '10'];
+  // eqn = "11 \u{2212} 2 \u{002b} 2 \u{2212} 11".split(' ').toList();
 
   print('Enter a equation\n');
 
